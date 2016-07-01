@@ -1,0 +1,42 @@
+<h1>{{title}}</h1>
+    
+    
+    
+    <div>
+        <h1> Price Data </h1>
+        <h2 class="error" id="noData"> No Data Selected </h2>
+        <h2 class="heroes"> <button class="button" (click)="refreshData()" >refresh data</button></h2>
+        <ul class="heroes">
+            <li *ngFor="let data of priceBandA">
+                region:<a class="heroesa">{{data.region}}</a> station:  <a class="heroesa">{{data.station}}</a> item: <a class="heroesa">{{data.itemname}}</a>   
+                <table class="herotable">
+                    <tr >
+                    <td class="price">ask </td>    
+                    <td class="alignright">volume </td>
+                    <td class="makeroom">  </td>
+                    <td class="price">bid </td>
+                    <td class="alignright">volume </td>
+                    <td class="price">range </td>
+                    </tr>
+                    <tr class="herotable" *ngFor="let md of data.l2pricedata" width="100em">
+                        <td class="price"> {{md.priceSell | moneyPipe}} </td>
+                        <td class="alignright">{{md.volSell | volPipe}} </td>
+                        <td class="makeroom">  </td>
+                        <td class="price">{{md.priceBuy | moneyPipe}} </td>
+                        <td class="alignright">{{md.volBuy | volPipe}} </td>
+                        <td class="price">{{md.Buyrange}} </td>
+                    </tr>
+                </table>
+<!--                <ul class="heroes">
+                <li id="quad" *ngFor="let md of data.l2pricedata">
+                    <p>sell: {{md.priceSell}}   
+                    volume: {{md.volSell}} buy: {{md.priceBuy}} vol: {{md.volBuy}}
+                    range: {{md.Buyrange}}
+                </li> 
+                </ul>
+-->                <!--<canvas width="600" height="100" id= data.type.id_str>
+                    
+                </canvas>-->
+            </li>
+        </ul>
+     </div>

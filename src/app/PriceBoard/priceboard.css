@@ -1,0 +1,100 @@
+
+.selected {
+      background-color: #1f2f2f !important;
+      color: #c0c9c7;
+    }
+    .herotable{
+        background-color: #1f2f2f !important;
+      margin: 0 0 2em 0;
+      color: #a8af87;
+      font-family: Verdana, Geneva, Tahoma, sans-serif;
+      font-weight: 100;
+      font-size: 9;
+
+      
+      border: 1px solid darkgray;
+      border-collapse: collapse;
+      
+    }
+    .herotable .tr{
+        width: 110em;
+        color: #c0c9c7;
+        
+    }
+    
+    .alignright{
+      text-align: right;
+       color: lawngreen;
+       padding-left: 5px;
+       padding-right: 5px;
+       padding-top: 3px;
+       padding-bottom: 3px;
+    }
+    .makeroom{
+        padding-left: 8px;
+        padding-top: 3px;
+        padding-bottom: 3px;
+    }
+    .price{
+        color: lightyellow;
+        padding-left: 3px;
+        padding-top: 3px;
+        padding-bottom: 3px;
+        
+    }
+    .heroes {
+      background-color: #1d2528 !important;
+      margin: 0 0 2em 0;
+      list-style-type: none;
+      padding: 0;
+      width: 80em;
+    }
+
+    .heroesa {
+      color: yellow;
+      padding-left: 5px;
+    }
+    .heroes .button{
+       background-color: #1d2528;
+       color: #ade6fb;
+       border-radius: 6px 0 0 6px;
+    }
+  /*  .heroes .button:hover{
+         color: #ade6fb;
+      background-color: #396763;
+      left: .1em;
+    }*/
+    .heroes li {
+      cursor: pointer;
+      position: relative;
+      left: 2;
+      background-color: transparent;
+      margin: .5em;
+      padding: .3em 0;
+      border-radius: 4px;
+    }
+    
+   /* .heroes li.selected:hover {
+      background-color: #396763 !important;
+      color: #c0c9c7;
+    }
+    .heroes li:hover {
+      color: #c0c9c7;
+      background-color: #396763;
+      left: .1em;
+    }*/
+    .heroes .text {
+      position: relative;
+      top: -3px;
+    }
+    .heroes li p{
+        display: inline-block;
+        vertical-align: middle;
+        margin-left: .8em;
+    }
+    .heroes .buttonold{
+       background-color: #1d2528;
+       color: #ade6fb;
+       margin: .8em;
+       border-radius: 4px 0 0 4px;
+    }

@@ -1,0 +1,26 @@
+<h1>{{title}}</h1>
+    
+    <h2> Please pick your items </h2>
+    <h2> <button class="heroes" (click)="onGetTypes()">Get Types Test</button></h2>
+    <div class="error" *ngIf="errorMessage">{{errorMessage}}</div>
+    <div class="row">
+      <div class="col-xs-4">
+        <ul class="doinline">
+          <li><label>search: </label>   <input type="text" name="search" (input)="dosd($event)"/></li>
+          </ul>
+      <ul class=heroes>
+          <li *ngFor="let item of allItemTypes" [class.selected]="hero === selectedHero" (click)="onSelectItem(item)">
+            <!--<span class="badge"><img src="{{item.type.icon.href}}"></span> {{ item.type.name }}-->
+            <img src="{{item.type.icon.href}}"/> <p>- {{ item.type.name }}</p>
+          </li>
+      </ul>
+      </div>
+      <div class="col-xs-5">
+        <h2> >>>  Selected Items <button class="heroes" (click)="onClearItems"> Clear Items</button></h2>
+        <ul class=heroes>
+             <li *ngFor="let it of selItemTypes" [class.halselected]="hal === selectedHal" (click)="onRemoveItem(it)">
+                {{ it.type.name }} 
+             </li>
+        </ul>
+      </div>
+  </div>

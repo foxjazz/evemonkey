@@ -1,0 +1,35 @@
+<h1>{{title}}</h1>
+    
+    <h2> Please select a region </h2>
+    <div class="error" *ngIf="errorMessage">{{errorMessage}}</div>
+    <div class="row">
+    
+      <div class="col-xs-3">
+      <!-- <ul class=heroes>
+             <li *ngFor="let System of avSystems">
+                {{ System.location.name }} 
+             </li>
+           </ul>-->
+      <ul class="heroes">
+          <li *ngFor="let Region of Regs" [class.selected]="hero === selectedHero" (click)="onSelectRegion(Region)">
+           <span class="badge">{{Region.id_str}}</span> {{ Region.name }}
+          
+            </li>
+      </ul>
+      </div>
+      <div class="col-xs-3">
+        <a class="lightYellow"> stations of {{lastSelRegion}}</a>
+       <ul class=station>
+             <li *ngFor="let System of avSystems" [class.halselected]="hal === selectedHal" (click)="onSelectStation(System)">
+                <p>{{ System.location.name }}</p> 
+             </li>
+        </ul>
+         <a class="lightYellow"> Selected stations </a>
+        <ul class=station>
+             <li *ngFor="let sysshort of selSystems" [class.halselected]="hal === selectedHal" (click)="onRemoveStation(sysshort)">
+               <p> {{ sysshort.stationName }} </p> 
+             </li>
+        </ul>
+      </div>
+  </div>
+  <h2> loading status = {{loaded}} </h2>

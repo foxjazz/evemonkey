@@ -1,0 +1,53 @@
+<h1>{{title}}</h1>
+    
+    <h2> Please pick your items </h2>
+    <div class="error" *ngIf="errorMessage">{{errorMessage}}</div>
+    <div class="row">
+      <div class="col-xs-4">
+
+        <ul class="doinline">
+          <li><label>search: </label>   <input type="text" name="search" (input)="dosd($event)"/></li>
+          <li>
+              
+          <Donkey  [data]="dondata">
+               
+          </Donkey>
+
+          </li>
+        </ul>
+      <ul class="heroes">
+          <li *ngFor="let oitem of itemTopGroups" [class.selected]="hero === selectedHero"  (click)="onSelectItemTopGroup(oitem)">
+          <span (click)="toggle(oitem)"> {{ oitem.name }}</span>
+          <!-- <a> expanded: {{oitem.isExpanded}}</a>-->
+           <!--*ngIf=oitem.isExpanded-->
+           <as-tree-view *ngIf=oitem.isExpanded [itemGroups]="getChildren(oitem)" (onItemsSelect)="onItemsSelect($event)" >
+                   
+           </as-tree-view>
+          </li>
+      </ul>
+      </div>
+     <!-- <div class="col-xs-3">
+           <h3>  { subgroup } </h3>
+      <ul class="heroes">
+          <li *ngFor="let childItem of selGrps" [class.selected]="hero === selectedHero" (click)="onSelectItemGroup(childItem)">
+           {{ childItem.name }}  
+          </li>
+      </ul>
+      </div>-->
+      
+      <div class="col-xs-3">
+           <h3>  { items } </h3>
+        <ul class="station">
+              <li *ngFor="let itype of itmtypes" [class.halselected]="hal === selectedHal" (click)="onSelectItem(itype)"> {{ itype.type.name}} </li>
+          </ul>
+      </div>
+      <div class="col-xs-3">
+           <h3>  { selections } </h3>
+        <ul class="station">
+             <li *ngFor="let it of selItemTypes" [class.halselected]="hal === selectedHal" (click)="onRemoveItem(it)">
+                {{ it.type.name }} 
+             </li>
+          </ul>
+      </div>
+
+  </div>

@@ -1,0 +1,184 @@
+:host {
+  display: block;
+  border: 1px solid black;
+  background-color: #1d2528;
+  color: #ade6fb;
+}
+   button{
+   display: block;
+	font-size: 1.1em;
+	font-weight: bold;
+	text-transform: uppercase;
+	padding: .5em .6em;
+	margin: 2em auto;
+	color: #ccc;
+	background-color: #555;
+	background: -webkit-linear-gradient(#888, #555);
+	background: linear-gradient(#888, #555);
+	border: 0 none;
+	border-radius: 6px;
+	text-shadow: 0 -1px 0 #000;
+	box-shadow: 0 1px 0 #396763, 0 5px 0 #1f2f2f, 0 6px 6px rgba(0,0,0,0.6);
+	cursor: pointer;
+    }
+
+nav a {
+  padding: 5px 10px;
+  text-decoration: none;
+  margin-top: 10px;
+  display: inline-block;
+  background-color: #1f2f2f;
+  border-radius: 4px;
+  color: #ade6fb;
+}
+nav a:hover {
+  color: #c0c9c7;
+  background-color: #396763;
+  cursor: pointer;
+}
+nav a.router-link-active {
+  color: #c0c9c7;
+}
+
+horizontal li{
+    display: inline-block;
+    zoom:1;
+    *display:inline; /* this fix is needed for IE7- */
+}
+.visible {
+    display: block
+}
+.hidden {
+  display: none
+}
+.halblue {
+    background-color: #1f2f2f !important;
+      color: #c0c9c7;
+}
+
+.halblue li{
+  color: #c0c9c7;
+  margin: .5em;
+      padding: .3em 0;
+      height: 1.6em;
+      border-radius: 4px;
+}
+
+ .hal li.selected:hover {
+      background-color: #396763 !important;
+      color: #c0c9c7;
+      cursor: pointer;
+    }
+    .hal li:hover {
+      color: #c0c9c7;
+      background-color: #396763;
+      left: .1em;
+    }
+
+.halselected{
+   background-color: #396763 !important;
+      color: #c0c9c7;
+}
+.hal{
+   margin: 0 0 2em 0;
+      list-style-type: none;
+      padding: 0;
+      width: 15em;
+}
+ .hal li {
+      cursor: pointer;
+      position: relative;
+      left: 0;
+      background-color: #1f2f2f;
+      margin: .5em;
+      padding: .3em 0;
+      height: 3.6em;
+      border-radius: 4px;
+    }
+    .hal li.selected:hover {
+      background-color: #396763 !important;
+      color: #c0c9c7;
+    }
+    .hal li:hover {
+      color: #c0c9c7;
+      background-color: #1f2f2f;
+      left: .1em;
+    }
+    .hal .text {
+      position: relative;
+      top: -3px;
+    }
+    
+.doinline li{
+ position: relative;
+      left: 0;
+      background-color: transparent;
+      margin: .5em;
+      padding: .3em 0;
+      border-radius: 4px;
+      display: inline;
+}
+
+ .doinline li input{
+      background-color: #396763 !important;
+      color: #c0c9c7;
+    }
+.selected {
+      background-color: #1f2f2f !important;
+      color: #c0c9c7;
+    }
+    .heroes {
+      margin: 0 0 2em 0;
+      list-style-type: none;
+      padding: 0;
+      width: 15em;
+    }
+    .heroes li {
+      cursor: pointer;
+      position: relative;
+      left: 0;
+      background-color: transparent;
+      margin: .5em;
+      padding: .3em 0;
+      height: 1.6em;
+      border-radius: 4px;
+    }
+    
+    .heroes li.selected:hover {
+      background-color: #396763 !important;
+      color: #c0c9c7;
+    }
+    .heroes li:hover {
+      color: #c0c9c7;
+      background-color: #396763;
+      left: .1em;
+    }
+    .heroes .text {
+      position: relative;
+      top: -3px;
+    }
+    .heroes img{
+      vertical-align: middle;
+      position: absolute;
+      height: 1.8em;
+    }
+    .heroes li p{
+        display: inline-block;
+        vertical-align: middle;
+        margin-left: 1.8em;
+    }
+    .heroes .button{
+       background-color: #1d2528;
+       color: #ade6fb;
+       margin: .8em;
+       border-radius: 4px 0 0 4px;
+    }
+    .heroes .badge {
+      padding: 0.8em 0.7em 0 0.7em;
+      background-color: #1f2f2f;
+      line-height: 1em;
+      position: relative;
+      height: 1.8em;
+      margin-right: .8em;
+      border-radius: 4px 0 0 4px;
+    }
