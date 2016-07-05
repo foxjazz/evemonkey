@@ -46,7 +46,7 @@ export class ibgComponent implements OnInit{
         let sd = new stringdistance(objh);    
         this.itmtypes = sd.result;
     }
-    toggle(it: ItemGroup)
+    private toggle(it: ItemGroup)
     {
         if(it.isExpanded)
             it.isExpanded = false;
@@ -60,20 +60,20 @@ export class ibgComponent implements OnInit{
     }
     private getGroups()
     {
-        this.itemGroups = this.itgs.getGroupData();
-        this.itemTopGroups = new Array<ItemGroup>();
-        this.subgrps = new Array<ItemGroup>();
-        for(let grp of this.itemGroups)
-        {
-            if(grp.parentGroup === undefined)
-                this.itemTopGroups.push(grp);
-            else
-                this.subgrps.push(grp);
-        }
-        for(let grp of this.itemTopGroups)
-        {
-            this.doChildren(grp);
-        }
+            this.itgs.getGroupHref().subscribe(res => {
+            this.itemGroups = res.items;
+            this.itemTopGroups = new Array<ItemGroup>();
+            this.subgrps = new Array<ItemGroup>();
+            for (let grp of this.itemGroups) {
+                if (grp.parentGroup === undefined)
+                    this.itemTopGroups.push(grp);
+                else
+                    this.subgrps.push(grp);
+            }
+            for (let grp of this.itemTopGroups) {
+                this.doChildren(grp);
+            }
+        });
     }
 
     private doChildren(parent: ItemGroup)
@@ -151,8 +151,13 @@ export class ibgComponent implements OnInit{
         //this.subgrps = item.children;
         this.itgs.getUnderData(item.types.href).subscribe(res3 => {
             this.itmtypes = [];
-            this.itmtypes = res3.items; });
+            this.itmtypes = res3.items;
+        });
+        for (let x of this.itemTopGroups) {
+            x.isExpanded = false;
+        }
         item.isExpanded = true;
+
     }
 
     onSelectItemGroup(item: ItemGroup) {
@@ -162,7 +167,7 @@ export class ibgComponent implements OnInit{
     }
             
     ngOnInit() {
-        this.ItemService.setGroupData();    
+        //this.ItemService.setGroupData();    
         this.getTypes();
         this.getGroups();
         this.itgs.getUnderData('https://crest-tq.eveonline.com/market/types/?group=https://crest-tq.eveonline.com/market/groups/4/')

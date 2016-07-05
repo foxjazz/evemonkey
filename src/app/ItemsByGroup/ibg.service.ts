@@ -7,9 +7,9 @@ import {ItemGroups,ItemGroup,ItemGroupsCls} from './interface';
 import {ItemTypesA} from '../EveItems/ItemTypes';
 import 'rxjs/add/operator/map';
 //import {ItemTypes} from './ItemTypes';
-
-
 //  var systemshort: ISystemShort = <ISystemShort>{};
+
+
 @Injectable()
 export class ibgService {
     private uri: string;
@@ -48,6 +48,12 @@ export class ibgService {
          else {  
             return new Array<ItemGroup>(); 
             } 
+   }
+
+   public getGroupHref(): Observable<ItemGroups> {
+       this.uri = 'https://crest-tq.eveonline.com/market/groups/';
+       return this.http.get(this.uri)
+           .map((res: Response) => res.json());
    }
 
    private ymd():string{

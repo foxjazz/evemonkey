@@ -11,7 +11,7 @@ import {ibgService} from '../ItemsByGroup/ibg.service';
             <as-tree-view *ngIf="itg.isExpanded" (onItemsSelect)="onItemsSel($event)" [itemGroups]="getChildren(itg)" >
             
              </as-tree-view>
-        <li>
+        </li>
     </ul>
     `,
     styleUrls: ['app/Common/treeview.css'],

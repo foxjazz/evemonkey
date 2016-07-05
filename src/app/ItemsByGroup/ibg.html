@@ -17,7 +17,7 @@
         </ul>
       <ul class="heroes">
           <li *ngFor="let oitem of itemTopGroups" [class.selected]="hero === selectedHero"  (click)="onSelectItemTopGroup(oitem)">
-          <span (click)="toggle(oitem)"> {{ oitem.name }}</span>
+          <span > {{ oitem.name }}</span>
           <!-- <a> expanded: {{oitem.isExpanded}}</a>-->
            <!--*ngIf=oitem.isExpanded-->
            <as-tree-view *ngIf=oitem.isExpanded [itemGroups]="getChildren(oitem)" (onItemsSelect)="onItemsSelect($event)" >

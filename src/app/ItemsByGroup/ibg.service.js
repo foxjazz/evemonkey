@@ -44,6 +44,11 @@ var ibgService = (function () {
             return new Array();
         }
     };
+    ibgService.prototype.getGroupHref = function () {
+        this.uri = 'https://crest-tq.eveonline.com/market/groups/';
+        return this.http.get(this.uri)
+            .map(function (res) { return res.json(); });
+    };
     ibgService.prototype.ymd = function () {
         var dateObj = new Date();
         var month = (dateObj.getUTCMonth() + 1).toString(); //months from 1-12

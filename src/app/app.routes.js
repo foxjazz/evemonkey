@@ -7,9 +7,9 @@ var help_component_1 = require('./Help/help.component');
 var routes = [
     { path: 'help', component: help_component_1.HelpComponent },
     { path: 'regions', component: region_component_1.RegionComponent },
-    { path: 'items', component: ibg_comp_1.ibgComponent },
-    { path: 'priceboard', component: priceboard_component_1.PriceBoardComponent },
-    { path: 'ibg', component: ibg_comp_1.ibgComponent }
+    { path: 'ItemsByGroup', component: ibg_comp_1.ibgComponent },
+    { path: 'PriceBoard', component: priceboard_component_1.PriceBoardComponent },
+    { path: '', redirectTo: 'regions', pathMatch: 'full' }
 ];
 exports.APP_ROUTER_PROVIDERS = [
     router_1.provideRouter(routes),

@@ -62,20 +62,23 @@ var ibgComponent = (function () {
         return it.children;
     };
     ibgComponent.prototype.getGroups = function () {
-        this.itemGroups = this.itgs.getGroupData();
-        this.itemTopGroups = new Array();
-        this.subgrps = new Array();
-        for (var _i = 0, _a = this.itemGroups; _i < _a.length; _i++) {
-            var grp = _a[_i];
-            if (grp.parentGroup === undefined)
-                this.itemTopGroups.push(grp);
-            else
-                this.subgrps.push(grp);
-        }
-        for (var _b = 0, _c = this.itemTopGroups; _b < _c.length; _b++) {
-            var grp = _c[_b];
-            this.doChildren(grp);
-        }
+        var _this = this;
+        this.itgs.getGroupHref().subscribe(function (res) {
+            _this.itemGroups = res.items;
+            _this.itemTopGroups = new Array();
+            _this.subgrps = new Array();
+            for (var _i = 0, _a = _this.itemGroups; _i < _a.length; _i++) {
+                var grp = _a[_i];
+                if (grp.parentGroup === undefined)
+                    _this.itemTopGroups.push(grp);
+                else
+                    _this.subgrps.push(grp);
+            }
+            for (var _b = 0, _c = _this.itemTopGroups; _b < _c.length; _b++) {
+                var grp = _c[_b];
+                _this.doChildren(grp);
+            }
+        });
     };
     ibgComponent.prototype.doChildren = function (parent) {
         for (var _i = 0, _a = this.subgrps; _i < _a.length; _i++) {
@@ -137,7 +140,7 @@ var ibgComponent = (function () {
     };
     ibgComponent.prototype.ngOnInit = function () {
         var _this = this;
-        this.ItemService.setGroupData();
+        //this.ItemService.setGroupData();    
         this.getTypes();
         this.getGroups();
         this.itgs.getUnderData('https://crest-tq.eveonline.com/market/types/?group=https://crest-tq.eveonline.com/market/groups/4/')
@@ -147,7 +150,7 @@ var ibgComponent = (function () {
     };
     ibgComponent = __decorate([
         core_1.Component({
-            selector: 'sel-groups',
+            selector: 'as-sel-groups',
             templateUrl: 'app/ItemsByGroup/ibg.html',
             styleUrls: ['app/itemsByGroup/ibg.css'],
             directives: [treeview_comp_1.TreeView, donkey_comp_1.Donkey],
