@@ -5,7 +5,7 @@
     <div>
         <h1> Price Data </h1>
         <h2 class="error" id="noData"> No Data Selected </h2>
-        <h2 class="heroes"> <button class="button" (click)="refreshData()" >refresh data</button></h2>
+        <h2 class="heroes"> <button class="button" (click)="refreshData()" >refresh data {{seconds}}</button></h2>
         <ul class="heroes">
             <li *ngFor="let data of priceBandA">
                 region:<a class="heroesa">{{data.region}}</a> station:  <a class="heroesa">{{data.station}}</a> item: <a class="heroesa">{{data.itemname}}</a>   

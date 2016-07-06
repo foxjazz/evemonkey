@@ -18,10 +18,14 @@ export class PriceBoardComponent implements OnInit {
   public selEveItems: Array<ItemType>;
   public resItems: Array<items>;
   public prices: Array<PriceData>;
-    public priceBandA: Array<PriceBand>;
+  public priceBandA: Array<PriceBand>;
+  public seconds: number;
+  private iteration: number;
   //public priceBandB: Array<PriceBand>;
   constructor(private evePricingService: EvePricingService) { }
   ngOnInit() {
+      this.iteration = 0;
+      setInterval(this.DoAllSelections, 1000);
     this.priceBandA = new Array<PriceBand>();
    
      this.priceBandA = new  Array<PriceBand>();
@@ -97,7 +101,7 @@ export class PriceBoardComponent implements OnInit {
     this.DoAllSelections();
   }
   
-  private aggItems(region: string, itemname: string, station: string,data: Array<items>){
+  private aggItems(region: string, itemname: string, lstation: string,data: Array<items>){
     let filtered: Array<items>;
     let i = 0;
     let pp = new Array<PriceData>();
@@ -106,26 +110,28 @@ export class PriceBoardComponent implements OnInit {
     let pps = new Array<PriceData>();
     for(i = 0; i < data.length; i++)
     {
-      if(data[i].buy === false){
-        let p: PriceData = new PriceData();
-        p.duration = data[i].duration;
-        p.price = data[i].price;
-        p.volume = data[i].volume;
-        p.range = data[i].range;
-        p.issued = data[i].issued;
-        p.location = data[i].location.name;
-        pp.push(p);
-      }
-      else{
-        let p: PriceData = new PriceData();
-        p.duration = data[i].duration;
-        p.price = data[i].price;
-        p.volume = data[i].volume;
-        p.range = data[i].range;
-        p.issued = data[i].issued;
-        p.location = data[i].location.name;
-        bb.push(p);
-      }
+        if (data[i].location.name === lstation) {
+            if (data[i].buy === false) {
+                let p: PriceData = new PriceData();
+                p.duration = data[i].duration;
+                p.price = data[i].price;
+                p.volume = data[i].volume;
+                p.range = data[i].range;
+                p.issued = data[i].issued;
+                p.location = data[i].location.name;
+                pp.push(p);
+            }
+            else {
+                let p: PriceData = new PriceData();
+                p.duration = data[i].duration;
+                p.price = data[i].price;
+                p.volume = data[i].volume;
+                p.range = data[i].range;
+                p.issued = data[i].issued;
+                p.location = data[i].location.name;
+                bb.push(p);
+            }
+        }
     }
     pps = pp.sort((left, right): number => {if(left.price < right.price) return -1; if(left.price > right.price) return 1; else return 0;});
     bbs = bb.sort((left, right): number => {if(left.price < right.price) return 1; if(left.price > right.price) return -1; else return 0;});
@@ -134,7 +140,7 @@ export class PriceBoardComponent implements OnInit {
     let npb: PriceBand = {
       region: region,
       itemname: itemname,
-      station: station,
+      station: lstation,
       l2pricedata: l2ao
     };
     this.priceBandA.push(npb);
@@ -148,6 +154,10 @@ export class PriceBoardComponent implements OnInit {
       err => console.log('Something went wrong:' + err.message));
   }
   private DoAllSelections() {
+      this.seconds = 0;
+      this.iteration += 1;
+      this.seconds += this.iteration;
+
     let isys = 0;
     let iitem = 0;
     try {
@@ -162,7 +172,7 @@ export class PriceBoardComponent implements OnInit {
     }
     for (isys = 0; isys < this.selSystems.length; isys++) {
       for (iitem = 0; iitem < this.selEveItems.length; iitem++) {
-        this.callPriceData(this.selSystems[isys].regionName,this.selEveItems[iitem].type.name,this.selSystems[isys].systemName,this.selSystems[isys].regionid, this.selEveItems[iitem].id);
+        this.callPriceData(this.selSystems[isys].regionName,this.selEveItems[iitem].type.name,this.selSystems[isys].stationName,this.selSystems[isys].regionid, this.selEveItems[iitem].id);
       }
     }
   }
