@@ -7,19 +7,11 @@
 
         <ul class="doinline">
           <li><label>search: </label>   <input type="text" name="search" (input)="dosd($event)"/></li>
-          <li>
-              
-          <Donkey  [data]="dondata">
-               
-          </Donkey>
-
-          </li>
         </ul>
       <ul class="heroes">
           <li *ngFor="let oitem of itemTopGroups" [class.selected]="hero === selectedHero"  (click)="onSelectItemTopGroup(oitem)">
-          <span > {{ oitem.name }}</span>
-          <!-- <a> expanded: {{oitem.isExpanded}}</a>-->
-           <!--*ngIf=oitem.isExpanded-->
+          <span (click)="toggle(oitem)"> {{ oitem.name }}</span>
+          
            <as-tree-view *ngIf=oitem.isExpanded [itemGroups]="getChildren(oitem)" (onItemsSelect)="onItemsSelect($event)" >
                    
            </as-tree-view>

@@ -7,7 +7,7 @@ import {ibgService} from '../ItemsByGroup/ibg.service';
     template: `
     <ul>
         <li *ngFor="let itg of itemGroups">
-            <span (click)="toggle(itg)"> {{ itg.name }} len:{{itemGroups.length}}</span>
+            <span (click)="toggle(itg)"> {{ itg.name }} </span>
             <as-tree-view *ngIf="itg.isExpanded" (onItemsSelect)="onItemsSel($event)" [itemGroups]="getChildren(itg)" >
             
              </as-tree-view>
