@@ -19,19 +19,22 @@ export class PriceBoardComponent implements OnInit {
   public resItems: Array<items>;
   public prices: Array<PriceData>;
   public priceBandA: Array<PriceBand>;
+  public priceBandItem: Array<PriceBand>;
   public seconds: number;
+  private priceDataAll: Array<PriceData>;
   private iteration: number;
   //public priceBandB: Array<PriceBand>;
   constructor(private evePricingService: EvePricingService) { }
   ngOnInit() {
       this.iteration = 0;
-      setInterval(this.DoAllSelections, 1000);
+      setInterval(this.DoAllSelections, 1);
     this.priceBandA = new Array<PriceBand>();
-   
-     this.priceBandA = new  Array<PriceBand>();
+    this.priceBandItem = new Array<PriceBand>();
+    this.priceDataAll = new Array<PriceData>();
     this.loadLocalData();
     this.DoAllSelections();
   }
+
   private pushlvl2(sell: Array<PriceData>, buy: Array<PriceData>): Array<Level2>
   {
   
@@ -54,16 +57,19 @@ export class PriceBoardComponent implements OnInit {
        if(sellIsLong)
        {
           l2.priceSell = sell[i].price;
-        l2.volSell = sell[i].volume;
+          l2.volSell = sell[i].volume;
+          l2.location = sell[i].location;
        }
        else{
          l2.priceBuy = buy[i].price;
         l2.volBuy = buy[i].volume;
         l2.Buyrange = buy[i].range;
+        l2.location = buy[i].location;
        }
        if (i < short && !sellIsLong ){
         l2.priceSell = sell[i].price;
         l2.volSell = sell[i].volume;
+        l2.location = sell[i].location;
         
        }
        
@@ -71,6 +77,7 @@ export class PriceBoardComponent implements OnInit {
         l2.priceBuy = buy[i].price;
         l2.volBuy = buy[i].volume;
         l2.Buyrange = buy[i].range;
+        l2.location = buy[i].location;
        }
         l2a.push(l2);   
     }
@@ -95,8 +102,15 @@ export class PriceBoardComponent implements OnInit {
             this.selEveItems = new Array<ItemType>();
          }
   }
+  getmoreData() {
+      this.priceBandItem = new Array<PriceBand>();
+      this.sortByItems();
+  }
+
   refreshData() {
-    this.priceBandA = new  Array<PriceBand>();
+      this.priceBandA = new Array<PriceBand>();
+
+      this.priceDataAll = new Array<PriceData>();
     this.loadLocalData();
     this.DoAllSelections();
   }
@@ -110,6 +124,16 @@ export class PriceBoardComponent implements OnInit {
     let pps = new Array<PriceData>();
     for(i = 0; i < data.length; i++)
     {
+        let pa: PriceData = new PriceData();
+        pa.duration = data[i].duration;
+        pa.price = data[i].price;
+        pa.volume = data[i].volume;
+        pa.range = data[i].range;
+        pa.issued = data[i].issued;
+        pa.location = lstation;
+        pa.type = itemname;
+        pa.buy = data[i].buy;
+        this.priceDataAll.push(pa);
         if (data[i].location.name === lstation) {
             if (data[i].buy === false) {
                 let p: PriceData = new PriceData();
@@ -118,7 +142,6 @@ export class PriceBoardComponent implements OnInit {
                 p.volume = data[i].volume;
                 p.range = data[i].range;
                 p.issued = data[i].issued;
-                p.location = data[i].location.name;
                 pp.push(p);
             }
             else {
@@ -128,7 +151,7 @@ export class PriceBoardComponent implements OnInit {
                 p.volume = data[i].volume;
                 p.range = data[i].range;
                 p.issued = data[i].issued;
-                p.location = data[i].location.name;
+//                p.location = data[i].location.name;
                 bb.push(p);
             }
         }
@@ -145,7 +168,42 @@ export class PriceBoardComponent implements OnInit {
     };
     this.priceBandA.push(npb);
   }
+  private sortByItems() {
 
+      this.priceBandItem = new Array<PriceBand>();
+      for (let item of this.selEveItems) {
+          let pp = new Array<PriceData>();
+          let bb = new Array<PriceData>();
+          let bbs = new Array<PriceData>();
+          let pps = new Array<PriceData>();
+          let i = 0;
+          let data = this.priceDataAll;
+          for (i = 0; i < this.priceDataAll.length; i++) {
+              if (data[i].type === item.type.name) {
+                  if (data[i].buy === false) {
+                      pp.push(this.priceDataAll[i]);
+                  }
+                  else {
+                      bb.push(this.priceDataAll[i]);
+                  }
+              }
+          }
+              pps = pp.sort((left, right): number => { if (left.price < right.price) return -1; if (left.price > right.price) return 1; else return 0; });
+              bbs = bb.sort((left, right): number => { if (left.price < right.price) return 1; if (left.price > right.price) return -1; else return 0; });
+              let l2ao = this.pushlvl2(pps, bbs);
+              let npb: PriceBand = {
+                  region: '',
+                  itemname: item.type.name,
+                  station: '',
+                  l2pricedata: l2ao
+              };
+
+              this.priceBandItem.push(npb);
+          }
+      }
+
+      
+  
   private callPriceData(region: string, itemname: string, station: string,regionid: string, typeid: number) {
     this.evePricingService.getPriceData(regionid, typeid).subscribe(res => {
       if(res.items.length > 0)
@@ -175,6 +233,7 @@ export class PriceBoardComponent implements OnInit {
         this.callPriceData(this.selSystems[isys].regionName,this.selEveItems[iitem].type.name,this.selSystems[isys].stationName,this.selSystems[isys].regionid, this.selEveItems[iitem].id);
       }
     }
+    this.sortByItems();
   }
 
 }

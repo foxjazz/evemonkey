@@ -21,7 +21,24 @@
         color: #c0c9c7;
         
     }
-    
+    .itemtable{
+        background-color: #1f2f2f !important;
+      margin: 0 0 2em 0;
+      color: #a8af87;
+      font-family: Verdana, Geneva, Tahoma, sans-serif;
+      font-weight: 100;
+      font-size: 9;
+
+      
+      border: 1px solid darkgray;
+      border-collapse: collapse;
+      
+    }
+    .itemtable .tr{
+        width: 210em;
+        color: #c0c9c7;
+        
+    }
     .alignright{
       text-align: right;
        color: lawngreen;
