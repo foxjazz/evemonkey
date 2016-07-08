@@ -51,7 +51,7 @@ var TreeView = (function () {
     TreeView = __decorate([
         core_1.Component({
             selector: 'as-tree-view',
-            template: "\n    <ul>\n        <li *ngFor=\"let itg of itemGroups\">\n            <span (click)=\"toggle(itg)\"> {{ itg.name }} len:{{itemGroups.length}}</span>\n            <as-tree-view *ngIf=\"itg.isExpanded\" (onItemsSelect)=\"onItemsSel($event)\" [itemGroups]=\"getChildren(itg)\" >\n            \n             </as-tree-view>\n        <li>\n    </ul>\n    ",
+            template: "\n    <ul>\n        <li *ngFor=\"let itg of itemGroups\">\n            <span (click)=\"toggle(itg)\"> {{ itg.name }} </span>\n            <as-tree-view *ngIf=\"itg.isExpanded\" (onItemsSelect)=\"onItemsSel($event)\" [itemGroups]=\"getChildren(itg)\" >\n            \n             </as-tree-view>\n        </li>\n    </ul>\n    ",
             styleUrls: ['app/Common/treeview.css'],
             directives: [TreeView],
             providers: [ibg_service_1.ibgService]

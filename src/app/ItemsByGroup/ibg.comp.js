@@ -129,6 +129,10 @@ var ibgComponent = (function () {
             _this.itmtypes = [];
             _this.itmtypes = res3.items;
         });
+        for (var _i = 0, _a = this.itemTopGroups; _i < _a.length; _i++) {
+            var x = _a[_i];
+            x.isExpanded = false;
+        }
         item.isExpanded = true;
     };
     ibgComponent.prototype.onSelectItemGroup = function (item) {

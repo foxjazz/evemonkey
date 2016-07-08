@@ -27,7 +27,7 @@ export class PriceBoardComponent implements OnInit {
   constructor(private evePricingService: EvePricingService) { }
   ngOnInit() {
       this.iteration = 0;
-      setInterval(this.DoAllSelections, 1);
+     // setInterval(this.DoAllSelections, 1);
     this.priceBandA = new Array<PriceBand>();
     this.priceBandItem = new Array<PriceBand>();
     this.priceDataAll = new Array<PriceData>();
@@ -115,7 +115,8 @@ export class PriceBoardComponent implements OnInit {
     this.DoAllSelections();
   }
   
-  private aggItems(region: string, itemname: string, lstation: string,data: Array<items>){
+  private aggItems(region: string, itemname: string, lstation: string, data: Array<items>) {
+      
     let filtered: Array<items>;
     let i = 0;
     let pp = new Array<PriceData>();
@@ -202,12 +203,14 @@ export class PriceBoardComponent implements OnInit {
           }
       }
 
-      
+
   
   private callPriceData(region: string, itemname: string, station: string,regionid: string, typeid: number) {
     this.evePricingService.getPriceData(regionid, typeid).subscribe(res => {
       if(res.items.length > 0)
-        this.aggItems(region, itemname, station, res.items);
+            this.aggItems(region, itemname, station, res.items);
+     
+     //     this.sortByItems();
     },
       err => console.log('Something went wrong:' + err.message));
   }
@@ -228,12 +231,28 @@ export class PriceBoardComponent implements OnInit {
       document.getElementById('noData').hidden = false;
       return;
     }
+   
     for (isys = 0; isys < this.selSystems.length; isys++) {
       for (iitem = 0; iitem < this.selEveItems.length; iitem++) {
-        this.callPriceData(this.selSystems[isys].regionName,this.selEveItems[iitem].type.name,this.selSystems[isys].stationName,this.selSystems[isys].regionid, this.selEveItems[iitem].id);
+          this.evePricingService.setReady(this.selSystems[isys].regionName,this.selEveItems[iitem].type.name,this.selSystems[isys].stationName,this.selSystems[isys].regionid, this.selEveItems[iitem].id);
       }
     }
-    this.sortByItems();
+    this.evePricingService.getPriceData2().subscribe(res => {
+        let ressorted = res.sort((left, right): number => { if (left.typeName < right.typeName) return -1; if (left.typeName > right.typeName) return 1; else return 0; });
+        for (let pt of ressorted) {
+            this.aggItems(pt.region, pt.typeName, pt.station, pt.items);
+        }
+        this.sortByItems();
+    });
+    //this.evePricingService.getPriceData2(regionid, typeid).subscribe(res => {
+    //    if (res.items.length > 0)
+    //        this.aggItems(region, itemname, station, res.items);
+    //    this.subdone += 1;
+    //    if (this.subdone === this.subtotal)
+    //        this.sortByItems();
+    //},
+    //    err => console.log('Something went wrong:' + err.message));
+    
   }
 
 }

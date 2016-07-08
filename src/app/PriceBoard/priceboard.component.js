@@ -19,8 +19,11 @@ var PriceBoardComponent = (function () {
         this.evePricingService = evePricingService;
     }
     PriceBoardComponent.prototype.ngOnInit = function () {
+        this.iteration = 0;
+        // setInterval(this.DoAllSelections, 1);
         this.priceBandA = new Array();
-        this.priceBandA = new Array();
+        this.priceBandItem = new Array();
+        this.priceDataAll = new Array();
         this.loadLocalData();
         this.DoAllSelections();
     };
@@ -45,20 +48,24 @@ var PriceBoardComponent = (function () {
             if (sellIsLong) {
                 l2.priceSell = sell[i].price;
                 l2.volSell = sell[i].volume;
+                l2.location = sell[i].location;
             }
             else {
                 l2.priceBuy = buy[i].price;
                 l2.volBuy = buy[i].volume;
                 l2.Buyrange = buy[i].range;
+                l2.location = buy[i].location;
             }
             if (i < short && !sellIsLong) {
                 l2.priceSell = sell[i].price;
                 l2.volSell = sell[i].volume;
+                l2.location = sell[i].location;
             }
             if (i < short && sellIsLong) {
                 l2.priceBuy = buy[i].price;
                 l2.volBuy = buy[i].volume;
                 l2.Buyrange = buy[i].range;
+                l2.location = buy[i].location;
             }
             l2a.push(l2);
         }
@@ -84,12 +91,17 @@ var PriceBoardComponent = (function () {
             this.selEveItems = new Array();
         }
     };
+    PriceBoardComponent.prototype.getmoreData = function () {
+        this.priceBandItem = new Array();
+        this.sortByItems();
+    };
     PriceBoardComponent.prototype.refreshData = function () {
         this.priceBandA = new Array();
+        this.priceDataAll = new Array();
         this.loadLocalData();
         this.DoAllSelections();
     };
-    PriceBoardComponent.prototype.aggItems = function (region, itemname, station, data) {
+    PriceBoardComponent.prototype.aggItems = function (region, itemname, lstation, data) {
         var filtered;
         var i = 0;
         var pp = new Array();
@@ -97,25 +109,36 @@ var PriceBoardComponent = (function () {
         var bbs = new Array();
         var pps = new Array();
         for (i = 0; i < data.length; i++) {
-            if (data[i].buy === false) {
-                var p = new pricetypes_1.PriceData();
-                p.duration = data[i].duration;
-                p.price = data[i].price;
-                p.volume = data[i].volume;
-                p.range = data[i].range;
-                p.issued = data[i].issued;
-                p.location = data[i].location.name;
-                pp.push(p);
-            }
-            else {
-                var p = new pricetypes_1.PriceData();
-                p.duration = data[i].duration;
-                p.price = data[i].price;
-                p.volume = data[i].volume;
-                p.range = data[i].range;
-                p.issued = data[i].issued;
-                p.location = data[i].location.name;
-                bb.push(p);
+            var pa = new pricetypes_1.PriceData();
+            pa.duration = data[i].duration;
+            pa.price = data[i].price;
+            pa.volume = data[i].volume;
+            pa.range = data[i].range;
+            pa.issued = data[i].issued;
+            pa.location = lstation;
+            pa.type = itemname;
+            pa.buy = data[i].buy;
+            this.priceDataAll.push(pa);
+            if (data[i].location.name === lstation) {
+                if (data[i].buy === false) {
+                    var p = new pricetypes_1.PriceData();
+                    p.duration = data[i].duration;
+                    p.price = data[i].price;
+                    p.volume = data[i].volume;
+                    p.range = data[i].range;
+                    p.issued = data[i].issued;
+                    pp.push(p);
+                }
+                else {
+                    var p = new pricetypes_1.PriceData();
+                    p.duration = data[i].duration;
+                    p.price = data[i].price;
+                    p.volume = data[i].volume;
+                    p.range = data[i].range;
+                    p.issued = data[i].issued;
+                    //                p.location = data[i].location.name;
+                    bb.push(p);
+                }
             }
         }
         pps = pp.sort(function (left, right) { if (left.price < right.price)
@@ -133,19 +156,65 @@ var PriceBoardComponent = (function () {
         var npb = {
             region: region,
             itemname: itemname,
-            station: station,
+            station: lstation,
             l2pricedata: l2ao
         };
         this.priceBandA.push(npb);
+    };
+    PriceBoardComponent.prototype.sortByItems = function () {
+        this.priceBandItem = new Array();
+        for (var _i = 0, _a = this.selEveItems; _i < _a.length; _i++) {
+            var item = _a[_i];
+            var pp = new Array();
+            var bb = new Array();
+            var bbs = new Array();
+            var pps = new Array();
+            var i = 0;
+            var data = this.priceDataAll;
+            for (i = 0; i < this.priceDataAll.length; i++) {
+                if (data[i].type === item.type.name) {
+                    if (data[i].buy === false) {
+                        pp.push(this.priceDataAll[i]);
+                    }
+                    else {
+                        bb.push(this.priceDataAll[i]);
+                    }
+                }
+            }
+            pps = pp.sort(function (left, right) { if (left.price < right.price)
+                return -1; if (left.price > right.price)
+                return 1;
+            else
+                return 0; });
+            bbs = bb.sort(function (left, right) { if (left.price < right.price)
+                return 1; if (left.price > right.price)
+                return -1;
+            else
+                return 0; });
+            var l2ao = this.pushlvl2(pps, bbs);
+            var npb = {
+                region: '',
+                itemname: item.type.name,
+                station: '',
+                l2pricedata: l2ao
+            };
+            this.priceBandItem.push(npb);
+        }
     };
     PriceBoardComponent.prototype.callPriceData = function (region, itemname, station, regionid, typeid) {
         var _this = this;
         this.evePricingService.getPriceData(regionid, typeid).subscribe(function (res) {
             if (res.items.length > 0)
                 _this.aggItems(region, itemname, station, res.items);
+            _this.subdone += 1;
+            if (_this.subdone === _this.subtotal)
+                _this.sortByItems();
         }, function (err) { return console.log('Something went wrong:' + err.message); });
     };
     PriceBoardComponent.prototype.DoAllSelections = function () {
+        this.seconds = 0;
+        this.iteration += 1;
+        this.seconds += this.iteration;
         var isys = 0;
         var iitem = 0;
         try {
@@ -159,9 +228,11 @@ var PriceBoardComponent = (function () {
             document.getElementById('noData').hidden = false;
             return;
         }
+        this.subtotal = this.selEveItems.length * this.selEveItems.length;
+        this.subdone = 0;
         for (isys = 0; isys < this.selSystems.length; isys++) {
             for (iitem = 0; iitem < this.selEveItems.length; iitem++) {
-                this.callPriceData(this.selSystems[isys].regionName, this.selEveItems[iitem].type.name, this.selSystems[isys].systemName, this.selSystems[isys].regionid, this.selEveItems[iitem].id);
+                this.callPriceData(this.selSystems[isys].regionName, this.selEveItems[iitem].type.name, this.selSystems[isys].stationName, this.selSystems[isys].regionid, this.selEveItems[iitem].id);
             }
         }
     };

@@ -11,7 +11,7 @@
             <h2 class="heroes"> <button class="button" (click)="refreshData()">refresh data {{seconds}}</button></h2>
             <ul class="heroes">
                 <li *ngFor="let data of priceBandA">
-                    region:<a class="heroesa">{{data.region}}</a> station:  <a class="heroesa">{{data.station}}</a> item: <a class="heroesa">{{data.itemname}}</a>
+                    item: <a class="heroesa">{{data.itemname}}</a> region:<a class="heroesa">{{data.region}}</a> station:  <a class="heroesa">{{data.station}}</a>
                     <table class="herotable">
                         <tr>
                             <td class="price">ask </td>
@@ -35,8 +35,8 @@
             </ul>
         </div>
         <div class="col-xs-4">
-            <h2 class="heroes">
-                <button class="button" (click)="getmoreData()">get more data </button></h2>
+            <!--<h2 class="heroes">
+                <button class="button" (click)="getmoreData()">get more data </button></h2>-->
                 <ul class="heroes">
                     <li *ngFor="let data2 of priceBandItem">
                         item: <a class="heroesa">{{data2.itemname}}</a>
