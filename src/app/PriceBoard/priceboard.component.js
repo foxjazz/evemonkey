@@ -206,12 +206,11 @@ var PriceBoardComponent = (function () {
         this.evePricingService.getPriceData(regionid, typeid).subscribe(function (res) {
             if (res.items.length > 0)
                 _this.aggItems(region, itemname, station, res.items);
-            _this.subdone += 1;
-            if (_this.subdone === _this.subtotal)
-                _this.sortByItems();
+            //     this.sortByItems();
         }, function (err) { return console.log('Something went wrong:' + err.message); });
     };
     PriceBoardComponent.prototype.DoAllSelections = function () {
+        var _this = this;
         this.seconds = 0;
         this.iteration += 1;
         this.seconds += this.iteration;
@@ -228,13 +227,31 @@ var PriceBoardComponent = (function () {
             document.getElementById('noData').hidden = false;
             return;
         }
-        this.subtotal = this.selEveItems.length * this.selEveItems.length;
-        this.subdone = 0;
         for (isys = 0; isys < this.selSystems.length; isys++) {
             for (iitem = 0; iitem < this.selEveItems.length; iitem++) {
-                this.callPriceData(this.selSystems[isys].regionName, this.selEveItems[iitem].type.name, this.selSystems[isys].stationName, this.selSystems[isys].regionid, this.selEveItems[iitem].id);
+                this.evePricingService.setReady(this.selSystems[isys].regionName, this.selEveItems[iitem].type.name, this.selSystems[isys].stationName, this.selSystems[isys].regionid, this.selEveItems[iitem].id);
             }
         }
+        this.evePricingService.getPriceData2().subscribe(function (res) {
+            var ressorted = res.sort(function (left, right) { if (left.typeName < right.typeName)
+                return -1; if (left.typeName > right.typeName)
+                return 1;
+            else
+                return 0; });
+            for (var _i = 0, ressorted_1 = ressorted; _i < ressorted_1.length; _i++) {
+                var pt = ressorted_1[_i];
+                _this.aggItems(pt.region, pt.typeName, pt.station, pt.items);
+            }
+            _this.sortByItems();
+        });
+        //this.evePricingService.getPriceData2(regionid, typeid).subscribe(res => {
+        //    if (res.items.length > 0)
+        //        this.aggItems(region, itemname, station, res.items);
+        //    this.subdone += 1;
+        //    if (this.subdone === this.subtotal)
+        //        this.sortByItems();
+        //},
+        //    err => console.log('Something went wrong:' + err.message));
     };
     PriceBoardComponent = __decorate([
         core_1.Component({

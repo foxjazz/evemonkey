@@ -28,6 +28,7 @@
       </div>-->
       
       <div class="col-xs-3">
+          <h3><button (click)="getbom()">replace with BOM</button></h3>
            <h3>  { items } </h3>
         <ul class="station">
               <li *ngFor="let itype of itmtypes" [class.halselected]="hal === selectedHal" (click)="onSelectItem(itype)"> {{ itype.type.name}} </li>
@@ -39,6 +40,25 @@
              <li *ngFor="let it of selItemTypes" [class.halselected]="hal === selectedHal" (click)="onRemoveItem(it)">
                 {{ it.type.name }} 
              </li>
+          </ul>
+          <h3> for bom </h3>
+           <ul class="station">
+             <li *ngFor="let it of selItemTypes" [class.halselected]="hal === selectedHal" (click)="onGetBOM(it)">
+                {{ it.type.name }} 
+             </li>
+          </ul>
+          <h3> bom </h3>
+           <ul class="station">
+             <li *ngFor="let b of selBom" [class.halselected]="hal === selectedHal">
+                id: {{ b.typeid }} quantity: {{b.quantity}} 
+             </li>
+          </ul>
+          
+          <h3> bomresults </h3>
+          <ul class="station">
+              <li *ngFor="let resit of itemBuild.items">
+                  price: {{resit.price | moneyPipe }} typeid: {{resit.typeid}}
+              </li>
           </ul>
       </div>
 

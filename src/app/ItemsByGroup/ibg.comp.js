@@ -9,10 +9,10 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
+var interface_1 = require('./interface');
 var ibg_service_1 = require('./ibg.service');
 var stringdistance_1 = require('../algs/stringdistance');
 var treeview_comp_1 = require('../common/treeview.comp');
-var donkey_comp_1 = require('../common/donkey.comp');
 var ibgComponent = (function () {
     function ibgComponent(itgs) {
         this.itgs = itgs;
@@ -41,6 +41,9 @@ var ibgComponent = (function () {
         };
         this.ItemService = itgs;
         this.selItemTypes = new Array();
+        //jsonp.request('app/blueprints.json').subscribe(res => {
+        //this.bp = res.json();
+        //})     
     }
     ibgComponent.prototype.dosd = function (event) {
         var s = event.target.value;
@@ -60,6 +63,35 @@ var ibgComponent = (function () {
     ibgComponent.prototype.getChildren = function (it) {
         this.selGrps = it.children;
         return it.children;
+    };
+    ibgComponent.prototype.onGetBOM = function (item) {
+        var _this = this;
+        this.itemBuild = new interface_1.ItemBuildCls();
+        this.itgs.getBOM(item.id.toString()).subscribe(function (res) {
+            _this.selBom = res;
+            _this.itgs.getBuildPrice(_this.selBom).subscribe(function (res) {
+                var pts = res;
+                for (var _i = 0, _a = _this.selBom; _i < _a.length; _i++) {
+                    var bomitem = _a[_i];
+                    for (var _b = 0, pts_1 = pts; _b < pts_1.length; _b++) {
+                        var pt = pts_1[_b];
+                        if (pt.typeid === bomitem.typeid) {
+                            var prc = void 0;
+                            prc = _this.itgs.getPriceTotal(bomitem.quantity, pt.items);
+                            var ibitem = { typeid: bomitem.typeid, description: pt.typeName, price: prc };
+                            _this.itemBuild.items.push(ibitem);
+                        }
+                    }
+                }
+            });
+        });
+    };
+    ibgComponent.prototype.addBOM = function (o) {
+        this.BOM = new Array();
+        for (var _i = 0, _a = o.bom; _i < _a.length; _i++) {
+            var xx = _a[_i];
+            this.BOM.push(xx);
+        }
     };
     ibgComponent.prototype.getGroups = function () {
         var _this = this;
@@ -157,7 +189,7 @@ var ibgComponent = (function () {
             selector: 'as-sel-groups',
             templateUrl: 'app/ItemsByGroup/ibg.html',
             styleUrls: ['app/itemsByGroup/ibg.css'],
-            directives: [treeview_comp_1.TreeView, donkey_comp_1.Donkey],
+            directives: [treeview_comp_1.TreeView],
             providers: [ibg_service_1.ibgService]
         }), 
         __metadata('design:paramtypes', [ibg_service_1.ibgService])

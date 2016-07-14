@@ -3,8 +3,11 @@
 import {Injectable} from '@angular/core';
 import {  Http, Response } from '@angular/http';
 import {Observable} from 'rxjs/Observable';
-import {ItemGroups,ItemGroup,ItemGroupsCls} from './interface';
+import {ItemGroups,ItemGroup,ItemGroupsCls,bom, ItemBuild, BItem} from './interface';
 import {ItemTypesA} from '../EveItems/ItemTypes';
+
+import {PriceTypes, items, PriceData} from '../PriceBoard/PriceTypes';
+
 import 'rxjs/add/operator/map';
 //import {ItemTypes} from './ItemTypes';
 //  var systemshort: ISystemShort = <ISystemShort>{};
@@ -16,8 +19,70 @@ export class ibgService {
     private itemGroups: ItemGroups;
     private Parents: ItemGroupsCls;
     private itmGrps: ItemGroup[];
+    private buildData: ItemBuild;
+    private tbom: bom[];
    constructor(private http: Http){}
+   //http://evecore.azurewebsites.net/api/blueprint/11183
 
+   getBuildPrice(thisbom: bom[]): Observable<PriceTypes[]> {
+       this.tbom = thisbom;
+       let pt = new Array<PriceTypes>();
+           return Observable.from(this.tbom)
+           .flatMap(t => this.getPriceDataUri(t.typeid))
+           .toArray()
+           .do((result: PriceTypes[]) => {
+                pt = pt.concat(result);
+            });
+   }
+   public getBOM(typeid: string): Observable<bom[]> {
+        let uri = 'http://evecore.azurewebsites.net/api/blueprint/' + typeid;
+        return this.http.get(uri)
+        .map((res: Response) => res.json());
+   }
+  
+
+   
+/*
+               for(let bomitem of thisbom)
+               {
+                    for(let pt of result)
+                    {
+                       if(pt.typeid == bomitem.typeid)
+                       {
+                           let prc: number;
+                           prc = this.getPriceTotal(bomitem.quantity,pt.items);
+                           let ibitem: BItem = {typeid: bomitem.typeid, description: pt.typeName, price: prc};
+                           data.items.push(ibitem);
+                       }
+                    }
+               }
+*/ 
+   public getPriceTotal(q: number, itms: Array<items>) : number
+   {
+        let retval: number;
+       let ps = new Array<PriceData>();
+        for(let oo of itms)
+        {
+            if(oo.buy === false && oo.location.id === 60003760)
+            {
+                let pd = new PriceData();
+                pd.price = oo.price;
+                pd.volume = oo.volume;
+                ps.push(pd);
+            }
+        }
+        let pps = ps.sort((left, right): number => {if(left.price < right.price) return -1; if(left.price > right.price) return 1; else return 0;});
+
+        if(pps.length > 0)
+        {
+            //if(q <= pps[0].volume)
+            retval =  q * pps[0].price;
+        }
+        else
+            retval = 0;
+            return parseFloat(Math.round(retval).toFixed(2));
+        
+   }
    public setGroupData() {
 
        //let dlast = localStorage.getItem('lastsaved');
@@ -56,6 +121,15 @@ export class ibgService {
            .map((res: Response) => res.json());
    }
 
+    private getPriceDataUri(typeid: number): Observable<PriceTypes> {
+       let uri = 'https://crest-tq.eveonline.com/market/10000002/orders/?type=https://crest-tq.eveonline.com/inventory/types/' + typeid.toString() + '/'
+        return this.http.get(uri).map((res: Response) => {
+            let p1: PriceTypes;
+            p1 = res.json();
+            p1.typeid = typeid;
+            return p1;
+        });
+    }
    private ymd():string{
             let dateObj = new Date();
             let month = (dateObj.getUTCMonth() + 1).toString(); //months from 1-12
@@ -74,4 +148,5 @@ export class ibgService {
         return this.http.get(urip)
             .map((res: Response) => res.json());
    }
+
 }

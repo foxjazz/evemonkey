@@ -1,18 +1,20 @@
 import {Component,OnInit} from '@angular/core';
-import {ItemGroups,ItemGroup,ItemGroupsCls} from './interface';
+import {ItemGroups,ItemGroup,ItemGroupsCls,Blueprint,bom, ItemBuild, BItem, ItemBuildCls} from './interface';
 import {ibgService} from './ibg.service';
 import {ItemTypes, ItemTypesA,ItemType} from '../EveItems/ItemTypes';
 import {Istringdistance, stringdistance} from '../algs/stringdistance';
 import {TreeView} from '../common/treeview.comp';
-import {Donkey} from '../common/donkey.comp';
+import {moneyPipe, volPipe} from '../PriceBoard/moneypipe';
+
 
 
 @Component ({
   selector: 'as-sel-groups',
   templateUrl: 'app/ItemsByGroup/ibg.html',
   styleUrls: ['app/itemsByGroup/ibg.css'],
-  directives: [TreeView,Donkey],
-  providers: [ibgService]
+  directives: [TreeView],
+  providers: [ibgService],
+   pipes: [moneyPipe,volPipe]
 })
 export class ibgComponent implements OnInit{
     
@@ -24,17 +26,23 @@ export class ibgComponent implements OnInit{
     public selItem: ItemType;
     public selItemTypes: Array<ItemType>;
     private predGrps: Array<ItemGroup>;
-    
     public itemsFromGroup: ItemTypesA;
     public itmtypes: Array<Object>;
     public selGrps: Array<Object>;
     private ItemService: ibgService;
     private cnt: number;
+    private pp: any;
+    public itemBuild: ItemBuildCls;
+    private bp: Blueprint[];
+    public BOM: bom[];
+    public selBom: bom[];
     constructor(private itgs: ibgService){ 
-        
+        this.itemBuild = new ItemBuildCls();
          this.ItemService = itgs;
          this.selItemTypes = new Array<ItemType>();
-         
+         //jsonp.request('app/blueprints.json').subscribe(res => {
+      //this.bp = res.json();
+    //})     
     }
      
      dosd(event : any){
@@ -57,6 +65,44 @@ export class ibgComponent implements OnInit{
     {
         this.selGrps = it.children;
         return it.children;
+    }
+
+    onGetBOM(item: ItemType) {
+        this.itemBuild = new ItemBuildCls();
+        this.itemBuild.items = new Array<BItem>();
+        let tot = 0;
+        this.itgs.getBOM(item.id.toString()).subscribe(res => {this.selBom = res;
+        this.itgs.getBuildPrice(this.selBom).subscribe(res => {let pts = res;
+            tot = 0;
+          for(let bomitem of this.selBom)
+               {
+                   
+                    for(let pt of pts)
+                    {
+                       if(pt.typeid === bomitem.typeid)
+                       {
+                           let prc: number;
+                           prc = this.itgs.getPriceTotal(bomitem.quantity,pt.items);
+                           tot += prc;
+                           let ibitem: BItem = {typeid: bomitem.typeid, description: pt.typeName, price: prc};
+                           this.itemBuild.items.push(ibitem);
+                       }
+                    }
+               }
+               let ibitem: BItem = {typeid: 0, description: 'Total', price: tot};
+                    this.itemBuild.items.push(ibitem);
+            });    
+        });
+        
+
+    }
+    private addBOM(o: Blueprint)
+    {
+        this.BOM = new Array<bom>();
+        for(let xx of o.bom)
+        {
+            this.BOM.push(xx);
+        }
     }
     private getGroups()
     {

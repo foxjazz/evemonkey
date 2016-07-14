@@ -1,4 +1,4 @@
-export interface PriceTypes { totalCount_str: string; items: Array<items>; region: string; typeName: string; station: string;}
+export interface PriceTypes { totalCount_str: string; items: Array<items>; region: string; typeName: string; station: string; typeid: number}
 export interface items {
     volume_str: string; buy: boolean; issued: string; price: number; volumeEntered: number;
     minVolume: number; volume: number; range: string; href: string; duration_str: string; location: location; duration: number;

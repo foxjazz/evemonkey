@@ -5,4 +5,10 @@ var ItemGroupsCls = (function () {
     return ItemGroupsCls;
 }());
 exports.ItemGroupsCls = ItemGroupsCls;
+var ItemBuildCls = (function () {
+    function ItemBuildCls() {
+    }
+    return ItemBuildCls;
+}());
+exports.ItemBuildCls = ItemBuildCls;
 //# sourceMappingURL=interface.js.map

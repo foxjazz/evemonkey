@@ -11,4 +11,10 @@ var Level2 = (function () {
     return Level2;
 }());
 exports.Level2 = Level2;
+var qarray = (function () {
+    function qarray() {
+    }
+    return qarray;
+}());
+exports.qarray = qarray;
 //# sourceMappingURL=pricetypes.js.map

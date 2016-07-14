@@ -6,6 +6,8 @@ import {EvePricingService} from './evepricing.service';
 import {moneyPipe, volPipe} from './moneypipe';
 import 'rxjs/Rx';
 
+
+
 @Component({
   
   templateUrl: 'app/PriceBoard/priceboard.component.html',
@@ -23,6 +25,7 @@ export class PriceBoardComponent implements OnInit {
   public seconds: number;
   private priceDataAll: Array<PriceData>;
   private iteration: number;
+  
   //public priceBandB: Array<PriceBand>;
   constructor(private evePricingService: EvePricingService) { }
   ngOnInit() {

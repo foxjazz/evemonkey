@@ -44,6 +44,7 @@ export class EvePricingService {
             .toArray()
             .do((result: PriceTypes[]) => {
                 pt = pt.concat(result);
+                
                // console.log(`Received ${result.length} price types`);
                 
             });

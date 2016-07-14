@@ -10,22 +10,56 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var http_1 = require('@angular/http');
+var Observable_1 = require('rxjs/Observable');
 require('rxjs/add/operator/map');
+var pricetypes_1 = require('./pricetypes');
 var EvePricingService = (function () {
-    //public regionid: string;
-    //public typehref: string;
     function EvePricingService(http) {
         this.http = http;
     }
     EvePricingService.prototype.getPriceData = function (regionid, typeid) {
-        this.uri = 'https://crest-tq.eveonline.com/market/' + regionid + '/orders/?type=https://crest-tq.eveonline.com/inventory/types/' + typeid.toString() + '/';
-        console.log('URI for price data' + this.uri);
-        return this.http.get(this.uri)
-            .map(function (res) { return res.json(); });
-        /* let newresult: Observable<ItemTypesA> = new Observable<ItemTypesA>();
-         let i: number = 0;
-         
-         return newresult;*/
+        var uri = 'https://crest-tq.eveonline.com/market/' + regionid + '/orders/?type=https://crest-tq.eveonline.com/inventory/types/' + typeid.toString() + '/';
+        console.log('URI for price data' + uri);
+        return this.http.get(uri).map(function (res) { return res.json(); });
+    };
+    EvePricingService.prototype.getPriceDataUri = function (uri, qx) {
+        var today = new Date();
+        var sec = today.getSeconds();
+        var ms = today.getMilliseconds();
+        console.log(sec + ':' + ms + ' URI for price data' + uri);
+        return this.http.get(uri).map(function (res) {
+            var p1;
+            p1 = res.json();
+            p1.region = qx.regionName;
+            p1.typeName = qx.typeName;
+            p1.station = qx.stationName;
+            return p1;
+        });
+    };
+    EvePricingService.prototype.getPriceData2 = function () {
+        var _this = this;
+        var pt = new Array();
+        return Observable_1.Observable.from(this.q2)
+            .flatMap(function (t) { return _this.getPriceDataUri(t.uri, t); })
+            .toArray()
+            .do(function (result) {
+            pt = pt.concat(result);
+            // console.log(`Received ${result.length} price types`);
+        });
+        //this.pt = new Array<PriceTypes>();
+        //this.q2.map(t => getPriceDataUri(t.uri))
+        //    .reduce((acc, curr) => [this.pt, curr], [])
+        //    .subscribe((result: PriceTypes[]) => console.log(`Received ${result.length} price types`));
+    };
+    EvePricingService.prototype.setReady = function (regionName, typeName, stationName, regionid, typeid) {
+        if (this.q2 == null)
+            this.q2 = new Array();
+        var q1 = new pricetypes_1.qarray();
+        q1.regionName = regionName;
+        q1.stationName = stationName;
+        q1.typeName = typeName;
+        q1.uri = 'https://crest-tq.eveonline.com/market/' + regionid + '/orders/?type=https://crest-tq.eveonline.com/inventory/types/' + typeid.toString() + '/';
+        this.q2.push(q1);
     };
     EvePricingService = __decorate([
         core_1.Injectable(), 

@@ -11,27 +11,20 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var http_1 = require('@angular/http');
 require('rxjs/add/operator/map');
-var HTTPEveService = (function () {
-    function HTTPEveService(http) {
+var BOMService = (function () {
+    function BOMService(http) {
         this.http = http;
-        this.uri = 'https://crest-tq.eveonline.com/regions/';
-        this.uriSys = '';
     }
-    HTTPEveService.prototype.getRegions = function () {
-        return this.http.get(this.uri)
-            .map(function (res) { return res.json(); });
+    BOMService.prototype.getPriceData = function (regionid, typeid) {
+        var uri = 'https://crest-tq.eveonline.com/market/' + regionid + '/orders/?type=https://crest-tq.eveonline.com/inventory/types/' + typeid.toString() + '/';
+        console.log('URI for price data' + uri);
+        return this.http.get(uri).map(function (res) { return res.json(); });
     };
-    HTTPEveService.prototype.getSystems = function (id) {
-        //https://crest-tq.eveonline.com/market/10000002/orders/?type=https://crest-tq.eveonline.com/inventory/types/34/
-        var uriSys = 'https://crest-tq.eveonline.com/market/' + id + '/orders/?type=https://crest-tq.eveonline.com/inventory/types/34/';
-        return this.http.get(uriSys)
-            .map(function (res) { return res.json(); });
-    };
-    HTTPEveService = __decorate([
+    BOMService = __decorate([
         core_1.Injectable(), 
         __metadata('design:paramtypes', [http_1.Http])
-    ], HTTPEveService);
-    return HTTPEveService;
+    ], BOMService);
+    return BOMService;
 }());
-exports.HTTPEveService = HTTPEveService;
-//# sourceMappingURL=http-eve.service.js.map
+exports.BOMService = BOMService;
+//# sourceMappingURL=bom.service.js.map
