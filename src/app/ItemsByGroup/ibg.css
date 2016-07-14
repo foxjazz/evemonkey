@@ -170,6 +170,30 @@ horizontal li{
       overflow: auto;
       width: 25em;
     }
+    .station image{
+      float:left;
+    }
+    img.imager{
+      float:right;
+      margin-left: 10px;
+    }
+    .station li div{
+      display: inline;
+    }
+    .station li div img{
+      float:right;
+      margin-left: 20px;
+      
+    }
+    .station container li {
+        width: 10%;
+        position: absolute;
+        bottom: 0; left: 0;
+    }
+    .station li div{
+      
+      margin-left: 25px;
+    }
     .station li {
       cursor: pointer;
       position: relative;
@@ -179,6 +203,7 @@ horizontal li{
       padding: .1em .1em;
       height: 1.6em;
       border-radius: 4px;
+      
     }
     
     .station li.selected:hover {

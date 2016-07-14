@@ -88,7 +88,7 @@ export class ibgComponent implements OnInit{
                        }
                     }
                }
-               let ibitem: BItem = {typeid: 0, description: 'Total', price: tot};
+               let ibitem: BItem = {typeid: 0, description: 'Total', price: parseFloat(tot.toFixed(2))};
                     this.itemBuild.items.push(ibitem);
             });    
         });
@@ -163,16 +163,22 @@ export class ibgComponent implements OnInit{
             } 
     }
      public onRemoveItem = function( item: ItemType){
-        this.tempItem = this.selItemTypes;
-        this.selItemTypes = new Array<ItemType>();
-        let i = 0;
-        for (i = 0; i < this.tempItem.length; i++) {
-          if (item === this.tempItem[i]) {
-            continue;
-          }
-          this.selItemTypes.push(this.tempItem[i]);
-        }
-         localStorage.setItem('SelEveItems', JSON.stringify(this.selItemTypes));
+         if(event.target["alt"] === "bom")
+         {
+             this.onGetBOM(item);
+         }
+         else{
+            this.tempItem = this.selItemTypes;
+            this.selItemTypes = new Array<ItemType>();
+            let i = 0;
+            for (i = 0; i < this.tempItem.length; i++) {
+            if (item === this.tempItem[i]) {
+                continue;
+            }
+            this.selItemTypes.push(this.tempItem[i]);
+            }
+            localStorage.setItem('SelEveItems', JSON.stringify(this.selItemTypes));
+         }
     }
    public onSelectItem = function (it: ItemType) {
         
