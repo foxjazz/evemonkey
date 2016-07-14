@@ -13,6 +13,7 @@ var interface_1 = require('./interface');
 var ibg_service_1 = require('./ibg.service');
 var stringdistance_1 = require('../algs/stringdistance');
 var treeview_comp_1 = require('../common/treeview.comp');
+var moneypipe_1 = require('../PriceBoard/moneypipe');
 var ibgComponent = (function () {
     function ibgComponent(itgs) {
         this.itgs = itgs;
@@ -39,6 +40,7 @@ var ibgComponent = (function () {
             this.selItemTypes.push(it);
             localStorage.setItem('SelEveItems', JSON.stringify(this.selItemTypes));
         };
+        this.itemBuild = new interface_1.ItemBuildCls();
         this.ItemService = itgs;
         this.selItemTypes = new Array();
         //jsonp.request('app/blueprints.json').subscribe(res => {
@@ -67,10 +69,13 @@ var ibgComponent = (function () {
     ibgComponent.prototype.onGetBOM = function (item) {
         var _this = this;
         this.itemBuild = new interface_1.ItemBuildCls();
+        this.itemBuild.items = new Array();
+        var tot = 0;
         this.itgs.getBOM(item.id.toString()).subscribe(function (res) {
             _this.selBom = res;
             _this.itgs.getBuildPrice(_this.selBom).subscribe(function (res) {
                 var pts = res;
+                tot = 0;
                 for (var _i = 0, _a = _this.selBom; _i < _a.length; _i++) {
                     var bomitem = _a[_i];
                     for (var _b = 0, pts_1 = pts; _b < pts_1.length; _b++) {
@@ -78,11 +83,14 @@ var ibgComponent = (function () {
                         if (pt.typeid === bomitem.typeid) {
                             var prc = void 0;
                             prc = _this.itgs.getPriceTotal(bomitem.quantity, pt.items);
-                            var ibitem = { typeid: bomitem.typeid, description: pt.typeName, price: prc };
-                            _this.itemBuild.items.push(ibitem);
+                            tot += prc;
+                            var ibitem_1 = { typeid: bomitem.typeid, description: pt.typeName, price: prc };
+                            _this.itemBuild.items.push(ibitem_1);
                         }
                     }
                 }
+                var ibitem = { typeid: 0, description: 'Total', price: tot };
+                _this.itemBuild.items.push(ibitem);
             });
         });
     };
@@ -190,7 +198,8 @@ var ibgComponent = (function () {
             templateUrl: 'app/ItemsByGroup/ibg.html',
             styleUrls: ['app/itemsByGroup/ibg.css'],
             directives: [treeview_comp_1.TreeView],
-            providers: [ibg_service_1.ibgService]
+            providers: [ibg_service_1.ibgService],
+            pipes: [moneypipe_1.moneyPipe, moneypipe_1.volPipe]
         }), 
         __metadata('design:paramtypes', [ibg_service_1.ibgService])
     ], ibgComponent);

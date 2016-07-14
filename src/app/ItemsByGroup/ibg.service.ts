@@ -80,7 +80,8 @@ export class ibgService {
         }
         else
             retval = 0;
-            return parseFloat(Math.round(retval).toFixed(2));
+            retval =parseFloat(retval.toFixed(2)); 
+        return retval;
         
    }
    public setGroupData() {

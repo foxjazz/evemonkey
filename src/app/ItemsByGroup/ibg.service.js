@@ -53,10 +53,11 @@ var ibgService = (function () {
                    }
     */
     ibgService.prototype.getPriceTotal = function (q, itms) {
+        var retval;
         var ps = new Array();
         for (var _i = 0, itms_1 = itms; _i < itms_1.length; _i++) {
             var oo = itms_1[_i];
-            if (oo.buy === false) {
+            if (oo.buy === false && oo.location.id === 60003760) {
                 var pd = new PriceTypes_1.PriceData();
                 pd.price = oo.price;
                 pd.volume = oo.volume;
@@ -69,9 +70,12 @@ var ibgService = (function () {
         else
             return 0; });
         if (pps.length > 0) {
-            //if (q <= pps[0].volume)
-                return q * pps[0].price;
+            //if(q <= pps[0].volume)
+            retval = q * pps[0].price;
         }
+        else
+            retval = 0;
+        return parseFloat(Math.round(retval).toFixed(2));
     };
     ibgService.prototype.setGroupData = function () {
         var _this = this;

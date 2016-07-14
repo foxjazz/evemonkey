@@ -76,7 +76,6 @@ export class ibgComponent implements OnInit{
             tot = 0;
           for(let bomitem of this.selBom)
                {
-                   
                     for(let pt of pts)
                     {
                        if(pt.typeid === bomitem.typeid)
@@ -93,7 +92,6 @@ export class ibgComponent implements OnInit{
                     this.itemBuild.items.push(ibitem);
             });    
         });
-        
 
     }
     private addBOM(o: Blueprint)
