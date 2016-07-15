@@ -1,5 +1,5 @@
 import {Component,OnInit} from '@angular/core';
-import {ItemGroups,ItemGroup,ItemGroupsCls,Blueprint,bom, ItemBuild, BItem, ItemBuildCls} from './interface';
+import {ItemGroups,ItemGroup,ItemGroupsCls,Blueprint,bom, ItemBuild, BItem, ItemBuildCls, TradeHubs, Hub} from './interface';
 import {ibgService} from './ibg.service';
 import {ItemTypes, ItemTypesA,ItemType} from '../EveItems/ItemTypes';
 import {Istringdistance, stringdistance} from '../algs/stringdistance';
@@ -36,10 +36,40 @@ export class ibgComponent implements OnInit{
     private bp: Blueprint[];
     public BOM: bom[];
     public selBom: bom[];
-    constructor(private itgs: ibgService){ 
+    public yourHub: Hub;
+    public lastHub: Hub;
+    public tradeHubs: TradeHubs;
+    constructor(private itgs: ibgService) {
         this.itemBuild = new ItemBuildCls();
-         this.ItemService = itgs;
-         this.selItemTypes = new Array<ItemType>();
+        this.ItemService = itgs;
+        this.selItemTypes = new Array<ItemType>();
+        this.tradeHubs = new TradeHubs();
+        this.tradeHubs.Hubs = new Array<Hub>();
+        let hub = new Hub();
+        hub.name = 'Jita'; hub.regionId = 10000002; hub.stationId = 60003760;
+        this.tradeHubs.Hubs.push(hub);
+        this.yourHub = hub;
+        this.lastHub = hub;
+        hub = new Hub();
+        hub.name = 'Amarr'; hub.regionId = 10000043; hub.stationId = 60008494;
+        this.tradeHubs.Hubs.push(hub);
+        hub = new Hub();
+        hub.name = 'Dodixie'; hub.regionId = 10000032; hub.stationId = 60011866;
+        this.tradeHubs.Hubs.push(hub);
+        hub = new Hub();
+        hub.name = 'Rens'; hub.regionId = 10000030; hub.stationId = 60004588;
+        this.tradeHubs.Hubs.push(hub);
+        hub = new Hub();
+        hub.name = 'Hek'; hub.regionId = 10000042; hub.stationId = 60005686;
+        this.tradeHubs.Hubs.push(hub);
+        hub = new Hub();
+        hub.name = 'Tash-Murkon'; hub.regionId = 10000020; hub.stationId = 60008764;
+        this.tradeHubs.Hubs.push(hub);
+        hub = new Hub();
+        hub.name = 'Oursulaert'; hub.regionId = 10000064; hub.stationId = 60011740;
+        this.tradeHubs.Hubs.push(hub);
+        hub = new Hub();
+
          //jsonp.request('app/blueprints.json').subscribe(res => {
       //this.bp = res.json();
     //})     
@@ -66,14 +96,20 @@ export class ibgComponent implements OnInit{
         this.selGrps = it.children;
         return it.children;
     }
-
+    onSelectTradeHub(h: Hub){
+        this.yourHub = h;
+    }
     onGetBOM(item: ItemType) {
         this.itemBuild = new ItemBuildCls();
         this.itemBuild.items = new Array<BItem>();
         let tot = 0;
+        let RegionId = this.yourHub.regionId;
+        let StationId = this.yourHub.stationId;
+        let ibitem: BItem;
         this.itgs.getBOM(item.id.toString()).subscribe(res => {this.selBom = res;
-        this.itgs.getBuildPrice(this.selBom).subscribe(res => {let pts = res;
+        this.itgs.getBuildPrice(this.selBom, RegionId).subscribe(res => {let pts = res;
             tot = 0;
+            this.lastHub = this.yourHub;
           for(let bomitem of this.selBom)
                {
                     for(let pt of pts)
@@ -81,10 +117,18 @@ export class ibgComponent implements OnInit{
                        if(pt.typeid === bomitem.typeid)
                        {
                            let prc: number;
-                           prc = this.itgs.getPriceTotal(bomitem.quantity,pt.items);
-                           tot += prc;
-                           let ibitem: BItem = {typeid: bomitem.typeid, description: pt.typeName, price: prc};
-                           this.itemBuild.items.push(ibitem);
+                           prc = this.itgs.getPriceTotal(bomitem.quantity, pt.items, StationId);
+                           if (prc > 0) {
+                               tot += prc;
+                               let ibitem: BItem = { typeid: bomitem.typeid, description: pt.items[0].type.name , price: prc };
+                               this.itemBuild.items.push(ibitem);
+                           }
+                           else {
+                               let ibitem: BItem = { typeid: bomitem.typeid, description: '(' + pt.items[0].type.name +')' , price: prc };
+                               this.itemBuild.items.push(ibitem);
+                           }
+
+
                        }
                     }
                }

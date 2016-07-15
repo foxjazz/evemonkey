@@ -38,10 +38,17 @@
       </div>
       <div class="col-xs-3">
            <h3>  { current selections } (click to remove) </h3>
+           <h3> (click BOM for build price) </h3>
         <ul class="station">
              <li *ngFor="let it of selItemTypes" [class.halselected]="hal === selectedHal" (click)="onRemoveItem(it)">
-                <img src = "{{it.type.icon.href}}" class="image">  <div> {{ it.type.name }}  </div> <img src="src/assets/images/bom.png" alt="bom" class=imager> 
+                <img src = "{{it.type.icon.href}}" class="image">  <div> {{ it.type.name }}  </div> <img src="http://evemarket.foxjazz.net/images/bom.png" alt="bom" class=imager> 
              </li>
+          </ul>
+          <h3>Preferred trade hub:  {{yourHub.name}}</h3>
+          <ul class="station">
+              <li *ngFor="let h of tradeHubs.Hubs" [class.halselected]="hal === selectedHal" (click)="onSelectTradeHub(h)">
+                  {{h.name}}
+              </li>
           </ul>
           <h3> BOM </h3>
            <ul class="station">
@@ -50,10 +57,10 @@
              </li>
           </ul>
           
-          <h3> BOM results </h3>
+          <h3> BOM results {{lastHub.name}} </h3>
           <ul class="station">
               <li *ngFor="let resit of itemBuild.items">
-                  {{resit.description}}  price: {{resit.price | moneyPipe }} typeid: {{resit.typeid}}
+                  {{resit.description}}  price: {{resit.price | moneyPipe }} 
               </li>
           </ul>
       </div>

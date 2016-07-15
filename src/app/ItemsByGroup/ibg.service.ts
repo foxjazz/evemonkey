@@ -24,11 +24,11 @@ export class ibgService {
    constructor(private http: Http){}
    //http://evecore.azurewebsites.net/api/blueprint/11183
 
-   getBuildPrice(thisbom: bom[]): Observable<PriceTypes[]> {
+   getBuildPrice(thisbom: bom[], Region: Number): Observable<PriceTypes[]> {
        this.tbom = thisbom;
        let pt = new Array<PriceTypes>();
            return Observable.from(this.tbom)
-           .flatMap(t => this.getPriceDataUri(t.typeid))
+           .flatMap(t => this.getPriceDataUri(t.typeid, Region))
            .toArray()
            .do((result: PriceTypes[]) => {
                 pt = pt.concat(result);
@@ -57,13 +57,16 @@ export class ibgService {
                     }
                }
 */ 
-   public getPriceTotal(q: number, itms: Array<items>) : number
+   public getPriceTotal(q: number, itms: Array<items>, stationid: Number) : number
    {
-        let retval: number;
+       let retval = 0;
+       let cumval = 0;
+       let rownum = 0;
+       let qvol = q;
        let ps = new Array<PriceData>();
         for(let oo of itms)
         {
-            if(oo.buy === false && oo.location.id === 60003760)
+            if(oo.buy === false && oo.location.id === stationid)
             {
                 let pd = new PriceData();
                 pd.price = oo.price;
@@ -73,15 +76,23 @@ export class ibgService {
         }
         let pps = ps.sort((left, right): number => {if(left.price < right.price) return -1; if(left.price > right.price) return 1; else return 0;});
 
-        if(pps.length > 0)
-        {
-            //if(q <= pps[0].volume)
-            retval =  q * pps[0].price;
+        if (pps.length > rownum) {
+            while (qvol > 0 && pps.length >= rownum) {
+                if (qvol <= pps[rownum].volume) {
+                    cumval += qvol * pps[rownum].price;
+                    qvol = 0;
+                }
+                else {
+                    cumval += parseFloat((pps[rownum].volume * pps[rownum].price).toFixed(2));
+                }
+                rownum++;
+            }
         }
+        if (qvol > 0)
+            retval = -1;
         else
-            retval = 0;
-            retval =parseFloat(retval.toFixed(2)); 
-        return retval;
+            retval = cumval;
+        return parseFloat(retval.toFixed(2));
         
    }
    public setGroupData() {
@@ -122,8 +133,9 @@ export class ibgService {
            .map((res: Response) => res.json());
    }
 
-    private getPriceDataUri(typeid: number): Observable<PriceTypes> {
-       let uri = 'https://crest-tq.eveonline.com/market/10000002/orders/?type=https://crest-tq.eveonline.com/inventory/types/' + typeid.toString() + '/'
+    private getPriceDataUri(typeid: number, Region: Number): Observable<PriceTypes> {
+       //let uri = 'https://crest-tq.eveonline.com/market/10000002/orders/?type=https://crest-tq.eveonline.com/inventory/types/' + typeid.toString() + '/'
+        let uri = 'https://crest-tq.eveonline.com/market/' + Region.toString() + '/orders/?type=https://crest-tq.eveonline.com/inventory/types/' + typeid.toString() + '/'
         return this.http.get(uri).map((res: Response) => {
             let p1: PriceTypes;
             p1 = res.json();

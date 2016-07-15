@@ -53,7 +53,10 @@ var ibgService = (function () {
                    }
     */
     ibgService.prototype.getPriceTotal = function (q, itms) {
-        var retval;
+        let retval = 0;
+        let cumval = 0;
+        let rownum = 0;
+        let qvol = q;
         var ps = new Array();
         for (var _i = 0, itms_1 = itms; _i < itms_1.length; _i++) {
             var oo = itms_1[_i];
@@ -65,16 +68,26 @@ var ibgService = (function () {
             }
         }
         var pps = ps.sort(function (left, right) { if (left.price < right.price)
-            return -1; if (left.price > right.price)
-            return 1;
-        else
-            return 0; });
-        if (pps.length > 0) {
-            //if(q <= pps[0].volume)
-            retval = q * pps[0].price;
+                return -1; if (left.price > right.price)
+                return 1;
+            else
+                return 0; });
+
+
+        if (pps.length > rownum) {
+            while (qvol > 0 && pps.length >= rownum) {
+                if (qvol <= pps[rownum].volume) {
+                    retval = qvol * pps[rownum].price;
+                    qvol = 0;
+                }
+                else {
+                    cumval += parseFloat(pps[rownum].volume * pps[rownum].price).toFixed(2);
+                }
+                rownum++;
+            }
         }
-        else
-            retval = 0;
+        if (qvol > 0)
+            retval = -1;
         return parseFloat(Math.round(retval).toFixed(2));
     };
     ibgService.prototype.setGroupData = function () {

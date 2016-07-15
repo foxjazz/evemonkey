@@ -14,4 +14,7 @@ export interface Blueprint {
    productTypeId: number;
    bom: [{typeid: number; quantity: number; }];
 }
-export class ItemBuildCls {items: Array<BItem>; }
+export class ItemBuildCls { items: Array<BItem>; }
+
+export class Hub { name: string; regionId: Number; stationId: Number; }
+export class TradeHubs { Hubs: Array<Hub>; }
