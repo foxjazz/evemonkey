@@ -101,65 +101,90 @@ var PriceBoardComponent = (function () {
         this.loadLocalData();
         this.DoAllSelections();
     };
-    PriceBoardComponent.prototype.aggItems = function (region, itemname, lstation, data) {
-        var filtered;
+    PriceBoardComponent.prototype.aggItemsRight = function (data, tn) {
         var i = 0;
-        var pp = new Array();
-        var bb = new Array();
-        var bbs = new Array();
-        var pps = new Array();
         for (i = 0; i < data.length; i++) {
             var pa = new pricetypes_1.PriceData();
             pa.duration = data[i].duration;
             pa.price = data[i].price;
             pa.volume = data[i].volume;
             pa.range = data[i].range;
+            pa.type = tn;
             pa.issued = data[i].issued;
-            pa.location = lstation;
-            pa.type = itemname;
             pa.buy = data[i].buy;
+            pa.location = data[i].location.name;
             this.priceDataAll.push(pa);
-            if (data[i].location.name === lstation) {
-                if (data[i].buy === false) {
-                    var p = new pricetypes_1.PriceData();
-                    p.duration = data[i].duration;
-                    p.price = data[i].price;
-                    p.volume = data[i].volume;
-                    p.range = data[i].range;
-                    p.issued = data[i].issued;
-                    pp.push(p);
-                }
-                else {
-                    var p = new pricetypes_1.PriceData();
-                    p.duration = data[i].duration;
-                    p.price = data[i].price;
-                    p.volume = data[i].volume;
-                    p.range = data[i].range;
-                    p.issued = data[i].issued;
-                    //                p.location = data[i].location.name;
-                    bb.push(p);
-                }
-            }
         }
-        pps = pp.sort(function (left, right) { if (left.price < right.price)
-            return -1; if (left.price > right.price)
+    };
+    PriceBoardComponent.prototype.getStationNames = function (region) {
+        var sn = new Array();
+        for (var _i = 0, _a = this.selSystems; _i < _a.length; _i++) {
+            var o = _a[_i];
+            if (o.regionName === region)
+                sn.push(o.stationName);
+        }
+        return sn;
+    };
+    PriceBoardComponent.prototype.aggItems = function (region, itemname, datans) {
+        var data = datans.sort(function (left, right) { if (left.location.name < right.location.name)
+            return -1; if (left.location.name > right.location.name)
             return 1;
         else
             return 0; });
-        bbs = bb.sort(function (left, right) { if (left.price < right.price)
-            return 1; if (left.price > right.price)
-            return -1;
-        else
-            return 0; });
-        // NEW INTERFACE OBJECT
-        var l2ao = this.pushlvl2(pps, bbs);
-        var npb = {
-            region: region,
-            itemname: itemname,
-            station: lstation,
-            l2pricedata: l2ao
-        };
-        this.priceBandA.push(npb);
+        var filtered;
+        var i = 0;
+        var sn = this.getStationNames(region);
+        var pp = new Array();
+        var bb = new Array();
+        var bbs = new Array();
+        var pps = new Array();
+        for (var _i = 0, sn_1 = sn; _i < sn_1.length; _i++) {
+            var stationN = sn_1[_i];
+            for (i = 0; i < data.length; i++) {
+                if (stationN === data[i].location.name) {
+                    if (data[i].buy === false) {
+                        var p = new pricetypes_1.PriceData();
+                        p.duration = data[i].duration;
+                        p.price = data[i].price;
+                        p.volume = data[i].volume;
+                        p.range = data[i].range;
+                        p.issued = data[i].issued;
+                        p.location = data[i].location.name;
+                        pp.push(p);
+                    }
+                    else {
+                        var p = new pricetypes_1.PriceData();
+                        p.duration = data[i].duration;
+                        p.price = data[i].price;
+                        p.volume = data[i].volume;
+                        p.range = data[i].range;
+                        p.issued = data[i].issued;
+                        p.location = data[i].location.name;
+                        //                p.location = data[i].location.name;
+                        bb.push(p);
+                    }
+                }
+            }
+            pps = pp.sort(function (left, right) { if (left.price < right.price)
+                return -1; if (left.price > right.price)
+                return 1;
+            else
+                return 0; });
+            bbs = bb.sort(function (left, right) { if (left.price < right.price)
+                return 1; if (left.price > right.price)
+                return -1;
+            else
+                return 0; });
+            // NEW INTERFACE OBJECT
+            var l2ao = this.pushlvl2(pps, bbs);
+            var npb = {
+                region: region,
+                itemname: itemname,
+                station: stationN,
+                l2pricedata: l2ao
+            };
+            this.priceBandA.push(npb);
+        }
     };
     PriceBoardComponent.prototype.sortByItems = function () {
         this.priceBandItem = new Array();
@@ -201,14 +226,14 @@ var PriceBoardComponent = (function () {
             this.priceBandItem.push(npb);
         }
     };
-    PriceBoardComponent.prototype.callPriceData = function (region, itemname, station, regionid, typeid) {
-        var _this = this;
-        this.evePricingService.getPriceData(regionid, typeid).subscribe(function (res) {
-            if (res.items.length > 0)
-                _this.aggItems(region, itemname, station, res.items);
-            //     this.sortByItems();
-        }, function (err) { return console.log('Something went wrong:' + err.message); });
-    };
+    //private callPriceData(region: string, itemname: string, station: string,regionid: string, typeid: number) {
+    //  this.evePricingService.getPriceData(regionid, typeid).subscribe(res => {
+    //    if(res.items.length > 0)
+    //          this.aggItems(region, itemname, res.items);
+    //   //     this.sortByItems();
+    //  },
+    //    err => console.log('Something went wrong:' + err.message));
+    //}
     PriceBoardComponent.prototype.DoAllSelections = function () {
         var _this = this;
         this.seconds = 0;
@@ -236,11 +261,18 @@ var PriceBoardComponent = (function () {
             var ressorted = res.sort(function (left, right) { if (left.typeName < right.typeName)
                 return -1; if (left.typeName > right.typeName)
                 return 1;
-            else
-                return 0; });
+            else {
+                if (left.station < right.station)
+                    return -1;
+                if (left.station > right.station)
+                    return 1;
+                else
+                    return 0;
+            } });
             for (var _i = 0, ressorted_1 = ressorted; _i < ressorted_1.length; _i++) {
                 var pt = ressorted_1[_i];
-                _this.aggItems(pt.region, pt.typeName, pt.station, pt.items);
+                _this.aggItems(pt.region, pt.typeName, pt.items);
+                _this.aggItemsRight(pt.items, pt.typeName);
             }
             _this.sortByItems();
         });

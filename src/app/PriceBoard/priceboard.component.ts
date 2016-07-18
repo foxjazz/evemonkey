@@ -117,60 +117,77 @@ export class PriceBoardComponent implements OnInit {
     this.loadLocalData();
     this.DoAllSelections();
   }
-  
-  private aggItems(region: string, itemname: string, lstation: string, data: Array<items>) {
-      
+  private aggItemsRight(data: Array<items>, tn: string) {
+      let i = 0;
+      for (i = 0; i < data.length; i++) {
+          let pa: PriceData = new PriceData();
+          pa.duration = data[i].duration;
+          pa.price = data[i].price;
+          pa.volume = data[i].volume;
+          pa.range = data[i].range;
+          pa.type = tn;
+          pa.issued = data[i].issued;
+          pa.buy = data[i].buy;
+          pa.location = data[i].location.name;
+          this.priceDataAll.push(pa);
+      }
+  }
+
+  private getStationNames(region: string): Array<string> {
+      let sn = new Array<string>();
+      for (let o of this.selSystems) {
+          if (o.regionName === region)
+              sn.push(o.stationName);
+      }
+      return sn;
+  }
+  private aggItems(region: string, itemname: string,  datans: Array<items>) {
+    let data = datans.sort((left, right): number => { if (left.location.name < right.location.name) return -1; if (left.location.name > right.location.name) return 1; else return 0; });
     let filtered: Array<items>;
     let i = 0;
+    let sn = this.getStationNames(region);
     let pp = new Array<PriceData>();
     let bb = new Array<PriceData>();
     let bbs = new Array<PriceData>();
     let pps = new Array<PriceData>();
-    for(i = 0; i < data.length; i++)
-    {
-        let pa: PriceData = new PriceData();
-        pa.duration = data[i].duration;
-        pa.price = data[i].price;
-        pa.volume = data[i].volume;
-        pa.range = data[i].range;
-        pa.issued = data[i].issued;
-        pa.location = lstation;
-        pa.type = itemname;
-        pa.buy = data[i].buy;
-        this.priceDataAll.push(pa);
-        if (data[i].location.name === lstation) {
-            if (data[i].buy === false) {
-                let p: PriceData = new PriceData();
-                p.duration = data[i].duration;
-                p.price = data[i].price;
-                p.volume = data[i].volume;
-                p.range = data[i].range;
-                p.issued = data[i].issued;
-                pp.push(p);
-            }
-            else {
-                let p: PriceData = new PriceData();
-                p.duration = data[i].duration;
-                p.price = data[i].price;
-                p.volume = data[i].volume;
-                p.range = data[i].range;
-                p.issued = data[i].issued;
-//                p.location = data[i].location.name;
-                bb.push(p);
+    for (let stationN of sn) {
+        for (i = 0; i < data.length; i++) {
+            if (stationN === data[i].location.name) {
+                if (data[i].buy === false) {
+                    let p: PriceData = new PriceData();
+                    p.duration = data[i].duration;
+                    p.price = data[i].price;
+                    p.volume = data[i].volume;
+                    p.range = data[i].range;
+                    p.issued = data[i].issued;
+                    p.location = data[i].location.name;
+                    pp.push(p);
+                }
+                else {
+                    let p: PriceData = new PriceData();
+                    p.duration = data[i].duration;
+                    p.price = data[i].price;
+                    p.volume = data[i].volume;
+                    p.range = data[i].range;
+                    p.issued = data[i].issued;
+                    p.location = data[i].location.name;
+                    //                p.location = data[i].location.name;
+                    bb.push(p);
+                }
             }
         }
+        pps = pp.sort((left, right): number => { if (left.price < right.price) return -1; if (left.price > right.price) return 1; else return 0; });
+        bbs = bb.sort((left, right): number => { if (left.price < right.price) return 1; if (left.price > right.price) return -1; else return 0; });
+        // NEW INTERFACE OBJECT
+        let l2ao = this.pushlvl2(pps, bbs);
+        let npb: PriceBand = {
+            region: region,
+            itemname: itemname,
+            station: stationN,
+            l2pricedata: l2ao
+        };
+        this.priceBandA.push(npb);
     }
-    pps = pp.sort((left, right): number => {if(left.price < right.price) return -1; if(left.price > right.price) return 1; else return 0;});
-    bbs = bb.sort((left, right): number => {if(left.price < right.price) return 1; if(left.price > right.price) return -1; else return 0;});
-    // NEW INTERFACE OBJECT
-    let l2ao = this.pushlvl2(pps, bbs);
-    let npb: PriceBand = {
-      region: region,
-      itemname: itemname,
-      station: lstation,
-      l2pricedata: l2ao
-    };
-    this.priceBandA.push(npb);
   }
   private sortByItems() {
 
@@ -208,15 +225,15 @@ export class PriceBoardComponent implements OnInit {
 
 
   
-  private callPriceData(region: string, itemname: string, station: string,regionid: string, typeid: number) {
-    this.evePricingService.getPriceData(regionid, typeid).subscribe(res => {
-      if(res.items.length > 0)
-            this.aggItems(region, itemname, station, res.items);
+  //private callPriceData(region: string, itemname: string, station: string,regionid: string, typeid: number) {
+  //  this.evePricingService.getPriceData(regionid, typeid).subscribe(res => {
+  //    if(res.items.length > 0)
+  //          this.aggItems(region, itemname, res.items);
      
-     //     this.sortByItems();
-    },
-      err => console.log('Something went wrong:' + err.message));
-  }
+  //   //     this.sortByItems();
+  //  },
+  //    err => console.log('Something went wrong:' + err.message));
+  //}
   private DoAllSelections() {
       this.seconds = 0;
       this.iteration += 1;
@@ -241,9 +258,10 @@ export class PriceBoardComponent implements OnInit {
       }
     }
     this.evePricingService.getPriceData2().subscribe(res => {
-        let ressorted = res.sort((left, right): number => { if (left.typeName < right.typeName) return -1; if (left.typeName > right.typeName) return 1; else return 0; });
+        let ressorted = res.sort((left, right): number => { if (left.typeName < right.typeName) return -1; if (left.typeName > right.typeName) return 1; else { if (left.station < right.station) return -1; if (left.station > right.station) return 1; else return 0; } });
         for (let pt of ressorted) {
-            this.aggItems(pt.region, pt.typeName, pt.station, pt.items);
+            this.aggItems(pt.region, pt.typeName, pt.items);
+            this.aggItemsRight(pt.items, pt.typeName);
         }
         this.sortByItems();
     });

@@ -35,11 +35,13 @@ export class ibgComponent implements OnInit{
     public itemBuild: ItemBuildCls;
     private bp: Blueprint[];
     public BOM: bom[];
+    private invalidate: boolean;
     public selBom: bom[];
     public yourHub: Hub;
     public lastHub: Hub;
     public tradeHubs: TradeHubs;
     constructor(private itgs: ibgService) {
+        this.invalidate = false;
         this.itemBuild = new ItemBuildCls();
         this.ItemService = itgs;
         this.selItemTypes = new Array<ItemType>();
@@ -239,9 +241,13 @@ export class ibgComponent implements OnInit{
     {
         this.ItemService.getUnderData(href).subscribe(res3 => {
             this.itmtypes =[];
-            this.itmtypes = res3.items; } );
+            this.itmtypes = res3.items; this.invalidate = true; } );
     }
-    onSelectItemTopGroup(item: ItemGroup){
+    onSelectItemTopGroup(item: ItemGroup) {
+        if (this.invalidate) {
+            this.invalidate = false;
+            return;
+        }
         //this.subgrps = item.children;
         this.itgs.getUnderData(item.types.href).subscribe(res3 => {
             this.itmtypes = [];

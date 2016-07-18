@@ -11,26 +11,32 @@
             <h2 class="heroes"> <button class="button" (click)="refreshData()">refresh data {{seconds}}</button></h2>
             <ul class="heroes">
                 <li *ngFor="let data of priceBandA">
-                    item: <a class="heroesa">{{data.itemname}}</a> region:<a class="heroesa">{{data.region}}</a> station:  <a class="heroesa">{{data.station}}</a>
-                    <table class="herotable">
-                        <tr>
-                            <td class="price">ask </td>
-                            <td class="alignright">volume </td>
-                            <td class="makeroom">  </td>
-                            <td class="price">bid </td>
-                            <td class="alignright">volume </td>
-                            <td class="price">range </td>
-                        </tr>
-                        <tr class="herotable" *ngFor="let md of data.l2pricedata" width="100em">
-                            <td class="price"> {{md.priceSell | moneyPipe}} </td>
-                            <td class="alignright">{{md.volSell | volPipe}} </td>
-                            <td class="makeroom">  </td>
-                            <td class="price">{{md.priceBuy | moneyPipe}} </td>
-                            <td class="alignright">{{md.volBuy | volPipe}} </td>
-                            <td class="price">{{md.Buyrange}} </td>
-                        </tr>
-                    </table>
-                    
+                    <ul>
+                        <li>item:  <a class="heroesa">{{data.itemname}}</a> region: <a class="heroesa">{{data.region}}</a></li>
+                        <li>
+                            station: <a class="heroesb">{{data.station}}</a>
+                        </li>
+                        <li>
+                            <table class="herotable">
+                                <tr>
+                                    <td class="price">ask </td>
+                                    <td class="alignright">volume </td>
+                                    <td class="makeroom">  </td>
+                                    <td class="price">bid </td>
+                                    <td class="alignright">volume </td>
+                                    <td class="price">range </td>
+                                </tr>
+                                <tr class="herotable" *ngFor="let md of data.l2pricedata" width="100em">
+                                    <td class="price"> {{md.priceSell | moneyPipe}} </td>
+                                    <td class="alignright">{{md.volSell | volPipe}} </td>
+                                    <td class="makeroom">  </td>
+                                    <td class="price">{{md.priceBuy | moneyPipe}} </td>
+                                    <td class="alignright">{{md.volBuy | volPipe}} </td>
+                                    <td class="price">{{md.Buyrange}} </td>
+                                </tr>
+                            </table>
+                        </li>
+                    </ul>
                 </li>
             </ul>
         </div>

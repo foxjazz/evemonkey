@@ -30,13 +30,13 @@
       <div class="col-xs-3">
           <!--<h3><button (click)="getbom()">replace with BOM</button></h3>-->
            <h3>  { items } </h3>
-        <ul class="station">
+        <ul class="station2">
               <li *ngFor="let itype of itmtypes" [class.halselected]="hal === selectedHal" (click)="onSelectItem(itype)">
                 <img src = "{{itype.type.icon.href}}" class="image"> <div>   {{ itype.type.name}} </div>
               </li>
           </ul>
       </div>
-      <div class="col-xs-3">
+      <div class="col-xs-4">
            <h3>  { current selections } (click to remove) </h3>
            <h3> (click BOM for build price) </h3>
         <ul class="station">

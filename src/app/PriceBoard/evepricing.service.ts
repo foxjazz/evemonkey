@@ -38,7 +38,7 @@ export class EvePricingService {
     }
 
     getPriceData2(): Observable<PriceTypes[]> {
-        let pt = new Array<PriceTypes>();
+        let pt = new Array<PriceTypes>();  //we should want q2 to only contain region id's and filter the stations as needed
         return Observable.from(this.q2)
             .flatMap(t => this.getPriceDataUri(t.uri,t))
             .toArray()
@@ -55,7 +55,7 @@ export class EvePricingService {
         //    .reduce((acc, curr) => [this.pt, curr], [])
         //    .subscribe((result: PriceTypes[]) => console.log(`Received ${result.length} price types`));
     }
-
+    
     public setReady(regionName: string, typeName: string, stationName: string, regionid: string, typeid: number) {
         if (this.q2 == null)
             this.q2 = new Array<qarray>();
@@ -65,6 +65,10 @@ export class EvePricingService {
         q1.stationName = stationName;
         q1.typeName = typeName;
         q1.uri = 'https://crest-tq.eveonline.com/market/' + regionid + '/orders/?type=https://crest-tq.eveonline.com/inventory/types/' + typeid.toString() + '/';
+        for (let q3 of this.q2) {
+            if (q1.regionName === q3.regionName && q1.typeName === q3.typeName)
+                return;
+        }
         this.q2.push(q1);
 
     }

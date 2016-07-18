@@ -19,16 +19,21 @@ var ibgComponent = (function () {
         this.itgs = itgs;
         this.dondata = 'the data';
         this.onRemoveItem = function (item) {
-            this.tempItem = this.selItemTypes;
-            this.selItemTypes = new Array();
-            var i = 0;
-            for (i = 0; i < this.tempItem.length; i++) {
-                if (item === this.tempItem[i]) {
-                    continue;
-                }
-                this.selItemTypes.push(this.tempItem[i]);
+            if (event.target["alt"] === "bom") {
+                this.onGetBOM(item);
             }
-            localStorage.setItem('SelEveItems', JSON.stringify(this.selItemTypes));
+            else {
+                this.tempItem = this.selItemTypes;
+                this.selItemTypes = new Array();
+                var i = 0;
+                for (i = 0; i < this.tempItem.length; i++) {
+                    if (item === this.tempItem[i]) {
+                        continue;
+                    }
+                    this.selItemTypes.push(this.tempItem[i]);
+                }
+                localStorage.setItem('SelEveItems', JSON.stringify(this.selItemTypes));
+            }
         };
         this.onSelectItem = function (it) {
             var i = 0;
@@ -40,9 +45,50 @@ var ibgComponent = (function () {
             this.selItemTypes.push(it);
             localStorage.setItem('SelEveItems', JSON.stringify(this.selItemTypes));
         };
+        this.invalidate = false;
         this.itemBuild = new interface_1.ItemBuildCls();
         this.ItemService = itgs;
         this.selItemTypes = new Array();
+        this.tradeHubs = new interface_1.TradeHubs();
+        this.tradeHubs.Hubs = new Array();
+        var hub = new interface_1.Hub();
+        hub.name = 'Jita';
+        hub.regionId = 10000002;
+        hub.stationId = 60003760;
+        this.tradeHubs.Hubs.push(hub);
+        this.yourHub = hub;
+        this.lastHub = hub;
+        hub = new interface_1.Hub();
+        hub.name = 'Amarr';
+        hub.regionId = 10000043;
+        hub.stationId = 60008494;
+        this.tradeHubs.Hubs.push(hub);
+        hub = new interface_1.Hub();
+        hub.name = 'Dodixie';
+        hub.regionId = 10000032;
+        hub.stationId = 60011866;
+        this.tradeHubs.Hubs.push(hub);
+        hub = new interface_1.Hub();
+        hub.name = 'Rens';
+        hub.regionId = 10000030;
+        hub.stationId = 60004588;
+        this.tradeHubs.Hubs.push(hub);
+        hub = new interface_1.Hub();
+        hub.name = 'Hek';
+        hub.regionId = 10000042;
+        hub.stationId = 60005686;
+        this.tradeHubs.Hubs.push(hub);
+        hub = new interface_1.Hub();
+        hub.name = 'Tash-Murkon';
+        hub.regionId = 10000020;
+        hub.stationId = 60008764;
+        this.tradeHubs.Hubs.push(hub);
+        hub = new interface_1.Hub();
+        hub.name = 'Oursulaert';
+        hub.regionId = 10000064;
+        hub.stationId = 60011740;
+        this.tradeHubs.Hubs.push(hub);
+        hub = new interface_1.Hub();
         //jsonp.request('app/blueprints.json').subscribe(res => {
         //this.bp = res.json();
         //})     
@@ -66,30 +112,43 @@ var ibgComponent = (function () {
         this.selGrps = it.children;
         return it.children;
     };
+    ibgComponent.prototype.onSelectTradeHub = function (h) {
+        this.yourHub = h;
+    };
     ibgComponent.prototype.onGetBOM = function (item) {
         var _this = this;
         this.itemBuild = new interface_1.ItemBuildCls();
         this.itemBuild.items = new Array();
         var tot = 0;
+        var RegionId = this.yourHub.regionId;
+        var StationId = this.yourHub.stationId;
+        var ibitem;
         this.itgs.getBOM(item.id.toString()).subscribe(function (res) {
             _this.selBom = res;
-            _this.itgs.getBuildPrice(_this.selBom).subscribe(function (res) {
+            _this.itgs.getBuildPrice(_this.selBom, RegionId).subscribe(function (res) {
                 var pts = res;
                 tot = 0;
+                _this.lastHub = _this.yourHub;
                 for (var _i = 0, _a = _this.selBom; _i < _a.length; _i++) {
                     var bomitem = _a[_i];
                     for (var _b = 0, pts_1 = pts; _b < pts_1.length; _b++) {
                         var pt = pts_1[_b];
                         if (pt.typeid === bomitem.typeid) {
                             var prc = void 0;
-                            prc = _this.itgs.getPriceTotal(bomitem.quantity, pt.items);
-                            tot += prc;
-                            var ibitem_1 = { typeid: bomitem.typeid, description: pt.typeName, price: prc };
-                            _this.itemBuild.items.push(ibitem_1);
+                            prc = _this.itgs.getPriceTotal(bomitem.quantity, pt.items, StationId);
+                            if (prc > 0) {
+                                tot += prc;
+                                var ibitem_1 = { typeid: bomitem.typeid, description: pt.items[0].type.name, price: prc };
+                                _this.itemBuild.items.push(ibitem_1);
+                            }
+                            else {
+                                var ibitem_2 = { typeid: bomitem.typeid, description: '(' + pt.items[0].type.name + ')', price: prc };
+                                _this.itemBuild.items.push(ibitem_2);
+                            }
                         }
                     }
                 }
-                var ibitem = { typeid: 0, description: 'Total', price: tot };
+                var ibitem = { typeid: 0, description: 'Total', price: parseFloat(tot.toFixed(2)) };
                 _this.itemBuild.items.push(ibitem);
             });
         });
@@ -160,10 +219,15 @@ var ibgComponent = (function () {
         this.ItemService.getUnderData(href).subscribe(function (res3) {
             _this.itmtypes = [];
             _this.itmtypes = res3.items;
+            _this.invalidate = true;
         });
     };
     ibgComponent.prototype.onSelectItemTopGroup = function (item) {
         var _this = this;
+        if (this.invalidate) {
+            this.invalidate = false;
+            return;
+        }
         //this.subgrps = item.children;
         this.itgs.getUnderData(item.types.href).subscribe(function (res3) {
             _this.itmtypes = [];

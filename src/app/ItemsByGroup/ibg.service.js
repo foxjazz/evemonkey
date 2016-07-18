@@ -21,12 +21,12 @@ var ibgService = (function () {
         this.http = http;
     }
     //http://evecore.azurewebsites.net/api/blueprint/11183
-    ibgService.prototype.getBuildPrice = function (thisbom) {
+    ibgService.prototype.getBuildPrice = function (thisbom, Region) {
         var _this = this;
         this.tbom = thisbom;
         var pt = new Array();
         return Observable_1.Observable.from(this.tbom)
-            .flatMap(function (t) { return _this.getPriceDataUri(t.typeid); })
+            .flatMap(function (t) { return _this.getPriceDataUri(t.typeid, Region); })
             .toArray()
             .do(function (result) {
             pt = pt.concat(result);
@@ -52,15 +52,15 @@ var ibgService = (function () {
                         }
                    }
     */
-    ibgService.prototype.getPriceTotal = function (q, itms) {
-        let retval = 0;
-        let cumval = 0;
-        let rownum = 0;
-        let qvol = q;
+    ibgService.prototype.getPriceTotal = function (q, itms, stationid) {
+        var retval = 0;
+        var cumval = 0;
+        var rownum = 0;
+        var qvol = q;
         var ps = new Array();
         for (var _i = 0, itms_1 = itms; _i < itms_1.length; _i++) {
             var oo = itms_1[_i];
-            if (oo.buy === false && oo.location.id === 60003760) {
+            if (oo.buy === false && oo.location.id === stationid) {
                 var pd = new PriceTypes_1.PriceData();
                 pd.price = oo.price;
                 pd.volume = oo.volume;
@@ -68,27 +68,27 @@ var ibgService = (function () {
             }
         }
         var pps = ps.sort(function (left, right) { if (left.price < right.price)
-                return -1; if (left.price > right.price)
-                return 1;
-            else
-                return 0; });
-
-
+            return -1; if (left.price > right.price)
+            return 1;
+        else
+            return 0; });
         if (pps.length > rownum) {
             while (qvol > 0 && pps.length >= rownum) {
                 if (qvol <= pps[rownum].volume) {
-                    retval = qvol * pps[rownum].price;
+                    cumval += qvol * pps[rownum].price;
                     qvol = 0;
                 }
                 else {
-                    cumval += parseFloat(pps[rownum].volume * pps[rownum].price).toFixed(2);
+                    cumval += parseFloat((pps[rownum].volume * pps[rownum].price).toFixed(2));
                 }
                 rownum++;
             }
         }
         if (qvol > 0)
             retval = -1;
-        return parseFloat(Math.round(retval).toFixed(2));
+        else
+            retval = cumval;
+        return parseFloat(retval.toFixed(2));
     };
     ibgService.prototype.setGroupData = function () {
         var _this = this;
@@ -121,8 +121,9 @@ var ibgService = (function () {
         return this.http.get(this.uri)
             .map(function (res) { return res.json(); });
     };
-    ibgService.prototype.getPriceDataUri = function (typeid) {
-        var uri = 'https://crest-tq.eveonline.com/market/10000002/orders/?type=https://crest-tq.eveonline.com/inventory/types/' + typeid.toString() + '/';
+    ibgService.prototype.getPriceDataUri = function (typeid, Region) {
+        //let uri = 'https://crest-tq.eveonline.com/market/10000002/orders/?type=https://crest-tq.eveonline.com/inventory/types/' + typeid.toString() + '/'
+        var uri = 'https://crest-tq.eveonline.com/market/' + Region.toString() + '/orders/?type=https://crest-tq.eveonline.com/inventory/types/' + typeid.toString() + '/';
         return this.http.get(uri).map(function (res) {
             var p1;
             p1 = res.json();

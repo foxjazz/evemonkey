@@ -11,4 +11,16 @@ var ItemBuildCls = (function () {
     return ItemBuildCls;
 }());
 exports.ItemBuildCls = ItemBuildCls;
+var Hub = (function () {
+    function Hub() {
+    }
+    return Hub;
+}());
+exports.Hub = Hub;
+var TradeHubs = (function () {
+    function TradeHubs() {
+    }
+    return TradeHubs;
+}());
+exports.TradeHubs = TradeHubs;
 //# sourceMappingURL=interface.js.map

@@ -168,7 +168,7 @@ horizontal li{
       font-size: 12;
        max-height: 500px; 
       overflow: auto;
-      width: 25em;
+      width: 35em;
     }
     .station image{
       float:left;
@@ -179,21 +179,16 @@ horizontal li{
     }
     .station li div{
       display: inline;
+      margin-left: 25px;
     }
     .station li div img{
       float:right;
       margin-left: 20px;
       
     }
-    .station container li {
-        width: 10%;
-        position: absolute;
-        bottom: 0; left: 0;
-    }
-    .station li div{
-      
-      margin-left: 25px;
-    }
+   
+
+   
     .station li {
       cursor: pointer;
       position: relative;
@@ -237,6 +232,85 @@ horizontal li{
        border-radius: 4px 0 0 4px;
     }
     .station .badge {
+      padding: 0.8em 0.7em 0 0.7em;
+      background-color: #1f2f2f;
+      line-height: 1em;
+      position: relative;
+      height: 1.8em;
+      margin-right: .8em;
+      border-radius: 4px 0 0 4px;
+    }    
+
+     .station2 {
+      margin: 0 0 2em 0;
+      list-style-type: none;
+      padding: 0;
+      font-family: Tahoma;
+      font-size: 12;
+       max-height: 500px; 
+      overflow: auto;
+      width: 25em;
+    }
+    .station2 image{
+      float:left;
+    }
+    
+    .station2 li div{
+      display: inline;
+    }
+    .station2 li div img{
+      float:right;
+      margin-left: 20px;
+      
+    }
+    
+    .station2 li div{
+      
+      margin-left: 25px;
+    }
+    .station2 li {
+      cursor: pointer;
+      position: relative;
+      left: 0;
+      background-color: transparent;
+      margin: .2em;
+      padding: .1em .1em;
+      height: 1.6em;
+      border-radius: 4px;
+      
+    }
+    
+    .station2 li.selected:hover {
+      background-color: #396763 !important;
+      color: #c0c9c7;
+    }
+    .station2 li:hover {
+      color: #f0f9c7;
+      background-color: #396763;
+      left: .2em;
+    }
+    .station2 .text {
+      position: relative;
+      margin-right: .8em;
+      top: -3px;
+    }
+    .station2 img{
+      vertical-align: middle;
+      position: absolute;
+      height: 1.8em;
+    }
+    .station2 li p{
+        display: inline-block;
+        vertical-align: middle;
+        margin-left: .5em;
+    }
+    .station2 .button{
+       background-color: #1d2528;
+       color: #ade6fb;
+       margin: .8em;
+       border-radius: 4px 0 0 4px;
+    }
+    .station2 .badge {
       padding: 0.8em 0.7em 0 0.7em;
       background-color: #1f2f2f;
       line-height: 1em;
