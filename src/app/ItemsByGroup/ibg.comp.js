@@ -249,6 +249,9 @@ var ibgComponent = (function () {
     ibgComponent.prototype.ngOnInit = function () {
         var _this = this;
         //this.ItemService.setGroupData();    
+        this.itgs.getAccessToken().subscribe(function (res) {
+            var xxx = res;
+        });
         this.getTypes();
         this.getGroups();
         this.itgs.getUnderData('https://crest-tq.eveonline.com/market/types/?group=https://crest-tq.eveonline.com/market/groups/4/')

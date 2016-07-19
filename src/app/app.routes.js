@@ -9,7 +9,7 @@ var routes = [
     { path: 'regions', component: region_component_1.RegionComponent },
     { path: 'ItemsByGroup', component: ibg_comp_1.ibgComponent },
     { path: 'PriceBoard', component: priceboard_component_1.PriceBoardComponent },
-    { path: '', redirectTo: 'regions', pathMatch: 'full' }
+    { path: '', redirectTo: 'ItemsByGroup', pathMatch: 'full' }
 ];
 exports.APP_ROUTER_PROVIDERS = [
     router_1.provideRouter(routes),

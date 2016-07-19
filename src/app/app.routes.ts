@@ -9,7 +9,7 @@ const routes: RouterConfig = [
   {path: 'regions', component: RegionComponent },
   {path: 'ItemsByGroup', component: ibgComponent },
   {path: 'PriceBoard', component: PriceBoardComponent },
-  {path: '', redirectTo: 'regions', pathMatch : 'full'}
+  {path: '', redirectTo: 'ItemsByGroup', pathMatch : 'full'}
 ];
 
 export const APP_ROUTER_PROVIDERS = [

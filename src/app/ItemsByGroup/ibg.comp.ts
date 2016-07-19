@@ -268,6 +268,9 @@ export class ibgComponent implements OnInit{
             
     ngOnInit() {
         //this.ItemService.setGroupData();    
+        this.itgs.getAccessToken().subscribe(res => {
+            let xxx = res
+        });
         this.getTypes();
         this.getGroups();
         this.itgs.getUnderData('https://crest-tq.eveonline.com/market/types/?group=https://crest-tq.eveonline.com/market/groups/4/')

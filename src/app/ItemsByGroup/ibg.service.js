@@ -131,6 +131,14 @@ var ibgService = (function () {
             return p1;
         });
     };
+    // https://login.eveonline.com/oauth/authorize/?response_type=code&redirect_uri=https%3A%2F%2F3rdpartysite.com%2Fcallback&client_id=3rdpartyClientId&scope=characterContactsRead%20characterContactsWrite&state=uniquestate123
+    ibgService.prototype.getAccessToken = function () {
+        var uri = 'https://login.eveonline.com/oauth/authorize/?response_type=code&redirect_uri=https%3A%2F%2Fevemarket.foxjazz.net%2Fcallback&client_id=9e60440952b2450eafc5e28943fbedef&scope=characterContactsRead%20characterContactsWrite&state=uniquestate123';
+        return this.http.get(uri).map(function (res) {
+            var ppp = res.json();
+            return ppp;
+        });
+    };
     ibgService.prototype.ymd = function () {
         var dateObj = new Date();
         var month = (dateObj.getUTCMonth() + 1).toString(); //months from 1-12
