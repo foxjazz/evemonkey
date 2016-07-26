@@ -32,12 +32,14 @@ export class ibgComponent implements OnInit{
     private ItemService: ibgService;
     private cnt: number;
     private pp: any;
+    private jitaHub: Hub;
     public itemBuild: ItemBuildCls;
     private bp: Blueprint[];
     public BOM: bom[];
     private invalidate: boolean;
     public selBom: bom[];
     public yourHub: Hub;
+    public priceBands: Array<number>;
     public lastHub: Hub;
     public tradeHubs: TradeHubs;
     constructor(private itgs: ibgService) {
@@ -51,6 +53,7 @@ export class ibgComponent implements OnInit{
         hub.name = 'Jita'; hub.regionId = 10000002; hub.stationId = 60003760;
         this.tradeHubs.Hubs.push(hub);
         this.yourHub = hub;
+        this.jitaHub = hub;
         this.lastHub = hub;
         hub = new Hub();
         hub.name = 'Amarr'; hub.regionId = 10000043; hub.stationId = 60008494;
@@ -183,18 +186,22 @@ export class ibgComponent implements OnInit{
         }
     }
 
-   /* private populateChildren(pg: Array<ItemGroup>){
-        for(let ch of this.subgrps)
-        {
-            for(let parentGrp of pg)
-            { 
-                    if(parentGrp.href === ch.parentGroup.href)
-                    {
-                        parentGrp.children.push(ch);
+    public getJitaPrice(type: ItemType, Region: Number)
+    {
+
+        this.itgs.getPriceDataUri(type.id,Region).subscribe(res => {
+                let retval  = NaN;
+                for (let ll of res.items) {
+                    if (ll.location.id === 60003760 && ll.buy === false) {
+                        if (isNaN(retval) || ll.price < retval)
+                            retval = ll.price;
                     }
+                }
+                type.Jitaprice = retval;
             }
-        }
-    }*/
+
+        );
+    }
 
     private getTypes() {
         let res: string;
@@ -203,15 +210,32 @@ export class ibgComponent implements OnInit{
          {
              let restry = JSON.parse(res);
              this.selItemTypes = restry;
+             for(let it of this.selItemTypes)
+             {
+                 this.getJitaPrice(it,this.jitaHub.regionId);
+             }
          }
          else {  
             this.selItemTypes = new Array<ItemType>(); 
             } 
     }
+    private saveEvent(item: ItemType)
+    {
+            //first load saved events if not already.
+        //look for item.typeid and replace, with current.
+        //then save to server
+    }
      public onRemoveItem = function( item: ItemType){
          if(event.target["alt"] === "bom")
          {
              this.onGetBOM(item);
+         }
+         else if(event.target["alt"]==="save event"){
+             this.saveEvent(item);
+         }
+         else if(event.target["alt"]==="fallsbelow")
+         {
+             return;
          }
          else{
             this.tempItem = this.selItemTypes;
@@ -234,6 +258,7 @@ export class ibgComponent implements OnInit{
                 return;
             }
         }
+       this.getJitaPrice(it,this.jitaHub.regionId);
         this.selItemTypes.push(it);
         localStorage.setItem('SelEveItems', JSON.stringify(this.selItemTypes));
     }
@@ -268,9 +293,9 @@ export class ibgComponent implements OnInit{
             
     ngOnInit() {
         //this.ItemService.setGroupData();    
-        this.itgs.getAccessToken().subscribe(res => {
-            let xxx = res
-        });
+        // this.itgs.getAccessToken().subscribe(res => {
+        //     let xxx = res
+        // });
         this.getTypes();
         this.getGroups();
         this.itgs.getUnderData('https://crest-tq.eveonline.com/market/types/?group=https://crest-tq.eveonline.com/market/groups/4/')

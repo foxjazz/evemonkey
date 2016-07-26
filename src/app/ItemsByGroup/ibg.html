@@ -5,9 +5,7 @@
     <div class="row">
       <div class="col-xs-4">
 
-        <ul class="doinline">
-          <li><label>search: </label>   <input type="text" name="search" (input)="dosd($event)"/></li>
-        </ul>
+
       <ul class="heroes">
           <li *ngFor="let oitem of itemTopGroups" [class.selected]="hero === selectedHero"  (click)="onSelectItemTopGroup(oitem)">
           <span (click)="toggle(oitem)"> {{ oitem.name }}</span>
@@ -28,8 +26,13 @@
       </div>-->
       
       <div class="col-xs-3">
+
           <!--<h3><button (click)="getbom()">replace with BOM</button></h3>-->
-           <h3>  { items } </h3>
+
+          <ul class="doinline">
+              <li><h3>items:</h3></li>
+              <li><label>search: </label>   <input type="text" name="search" (input)="dosd($event)"/></li>
+          </ul>
         <ul class="station2">
               <li *ngFor="let itype of itmtypes" [class.halselected]="hal === selectedHal" (click)="onSelectItem(itype)">
                 <img src = "{{itype.type.icon.href}}" class="image"> <div>   {{ itype.type.name}} </div>
@@ -39,11 +42,38 @@
       <div class="col-xs-4">
            <h3>  { current selections } (click to remove) </h3>
            <h3> (click BOM for build price) </h3>
-        <ul class="station">
+        <!--<ul class="station">
              <li *ngFor="let it of selItemTypes" [class.halselected]="hal === selectedHal" (click)="onRemoveItem(it)">
-                <img src = "{{it.type.icon.href}}" class="image">  <div> {{ it.type.name }}  </div> <img src="http://evemarket.foxjazz.net/images/bom.png" alt="bom" class=imager> 
+                 <img src = "{{it.type.icon.href}}" class="image">  <div> {{ it.type.name }}  </div> <img src="http://evemarket.foxjazz.net/images/bom.png" alt="bom" class=imager>
+                 <div color="BD0913">Alert</div> drops below Jita: {{it.jitaprice | moneyPipe}}
+
              </li>
-          </ul>
+          </ul>-->
+          <table class="itemtable">
+              <tr>
+                  <td>Img</td>
+                  <td>type</td>
+                  <td class="makeroom">  </td>
+                  <td>bom</td>
+
+                  <td class="price">Jita price </td>
+                 <!-- <td class="price">Price falls below event</td>
+                  <td class="price">input price</td>
+                  <td>Save Events</td>-->
+
+              </tr>
+              <tr  *ngFor="let it of selItemTypes" [class.itemselected]="item === selectedItem" (click)="onRemoveItem(it)">
+                  <td class="image"> <img src = "{{it.type.icon.href}}" class="image">  </td>
+                  <td> {{it.type.name}} </td>
+                  <td class="makeroom">  </td>
+                  <td class="bomtext" alt="bom"> <img src="assets/images/bom.png" alt="bom"> </td>
+
+                  <td class="price">{{it.Jitaprice | moneyPipe}} </td>
+                  <!--<td class="price" alt="fallsbelow">below: <input class="input" alt="fallsbelow" type="number" #box (keyup)="it.Alertprice = box.value"> </td>
+                  <td class="price">{{it.Alertprice | moneyPipe}} </td>
+                  <td class="image>"><img src="assets/images/save.png" alt="save event"></td>-->
+              </tr>
+          </table>
           <h3>Preferred trade hub:  {{yourHub.name}}</h3>
           <ul class="station">
               <li *ngFor="let h of tradeHubs.Hubs" [class.halselected]="hal === selectedHal" (click)="onSelectTradeHub(h)">

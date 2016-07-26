@@ -133,7 +133,8 @@ export class ibgService {
            .map((res: Response) => res.json());
    }
 
-    private getPriceDataUri(typeid: number, Region: Number): Observable<PriceTypes> {
+
+    public getPriceDataUri(typeid: number, Region: Number): Observable<PriceTypes> {
        //let uri = 'https://crest-tq.eveonline.com/market/10000002/orders/?type=https://crest-tq.eveonline.com/inventory/types/' + typeid.toString() + '/'
         let uri = 'https://crest-tq.eveonline.com/market/' + Region.toString() + '/orders/?type=https://crest-tq.eveonline.com/inventory/types/' + typeid.toString() + '/'
         return this.http.get(uri).map((res: Response) => {
