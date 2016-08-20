@@ -25,9 +25,9 @@ export class ibgService {
    //http://evecore.azurewebsites.net/api/blueprint/11183
 
    getBuildPrice(thisbom: bom[], Region: Number): Observable<PriceTypes[]> {
-       this.tbom = thisbom;
+
        let pt = new Array<PriceTypes>();
-           return Observable.from(this.tbom)
+           return Observable.from(thisbom)
            .flatMap(t => this.getPriceDataUri(t.typeid, Region))
            .toArray()
            .do((result: PriceTypes[]) => {
@@ -35,9 +35,11 @@ export class ibgService {
             });
    }
    public getBOM(typeid: string): Observable<bom[]> {
-        let uri = 'http://evecore.azurewebsites.net/api/blueprint/' + typeid;
+        //let uri = 'http://evecore.azurewebsites.net/api/blueprint/' + typeid;
+       let uri = 'https://54.227.207.106:3001/api/evemarket/' + typeid;
         return this.http.get(uri)
         .map((res: Response) => res.json());
+
    }
   
 

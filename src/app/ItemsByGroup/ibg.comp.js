@@ -22,6 +22,12 @@ var ibgComponent = (function () {
             if (event.target["alt"] === "bom") {
                 this.onGetBOM(item);
             }
+            else if (event.target["alt"] === "save event") {
+                this.saveEvent(item);
+            }
+            else if (event.target["alt"] === "fallsbelow") {
+                return;
+            }
             else {
                 this.tempItem = this.selItemTypes;
                 this.selItemTypes = new Array();
@@ -42,6 +48,7 @@ var ibgComponent = (function () {
                     return;
                 }
             }
+            this.getJitaPrice(it, this.jitaHub.regionId);
             this.selItemTypes.push(it);
             localStorage.setItem('SelEveItems', JSON.stringify(this.selItemTypes));
         };
@@ -57,6 +64,7 @@ var ibgComponent = (function () {
         hub.stationId = 60003760;
         this.tradeHubs.Hubs.push(hub);
         this.yourHub = hub;
+        this.jitaHub = hub;
         this.lastHub = hub;
         hub = new interface_1.Hub();
         hub.name = 'Amarr';
@@ -123,9 +131,9 @@ var ibgComponent = (function () {
         var RegionId = this.yourHub.regionId;
         var StationId = this.yourHub.stationId;
         var ibitem;
-        this.itgs.getBOM(item.id.toString()).subscribe(function (res) {
-            _this.selBom = res;
-            _this.itgs.getBuildPrice(_this.selBom, RegionId).subscribe(function (res) {
+        this.itgs.getBOM(item.id.toString()).subscribe(function (bom) {
+            _this.selBom = bom;
+            _this.itgs.getBuildPrice(bom, RegionId).subscribe(function (res) {
                 var pts = res;
                 tot = 0;
                 _this.lastHub = _this.yourHub;
@@ -150,6 +158,8 @@ var ibgComponent = (function () {
                 }
                 var ibitem = { typeid: 0, description: 'Total', price: parseFloat(tot.toFixed(2)) };
                 _this.itemBuild.items.push(ibitem);
+            }, function (error) {
+                console.log(error);
             });
         });
     };
@@ -191,28 +201,38 @@ var ibgComponent = (function () {
             }
         }
     };
-    /* private populateChildren(pg: Array<ItemGroup>){
-         for(let ch of this.subgrps)
-         {
-             for(let parentGrp of pg)
-             {
-                     if(parentGrp.href === ch.parentGroup.href)
-                     {
-                         parentGrp.children.push(ch);
-                     }
-             }
-         }
-     }*/
+    ibgComponent.prototype.getJitaPrice = function (type, Region) {
+        this.itgs.getPriceDataUri(type.id, Region).subscribe(function (res) {
+            var retval = NaN;
+            for (var _i = 0, _a = res.items; _i < _a.length; _i++) {
+                var ll = _a[_i];
+                if (ll.location.id === 60003760 && ll.buy === false) {
+                    if (isNaN(retval) || ll.price < retval)
+                        retval = ll.price;
+                }
+            }
+            type.Jitaprice = retval;
+        });
+    };
     ibgComponent.prototype.getTypes = function () {
         var res;
         res = localStorage.getItem('SelEveItems');
         if (res != null && res.indexOf('marketGroup') > 0) {
             var restry = JSON.parse(res);
             this.selItemTypes = restry;
+            for (var _i = 0, _a = this.selItemTypes; _i < _a.length; _i++) {
+                var it_1 = _a[_i];
+                this.getJitaPrice(it_1, this.jitaHub.regionId);
+            }
         }
         else {
             this.selItemTypes = new Array();
         }
+    };
+    ibgComponent.prototype.saveEvent = function (item) {
+        //first load saved events if not already.
+        //look for item.typeid and replace, with current.
+        //then save to server
     };
     ibgComponent.prototype.onItemsSelect = function (href) {
         var _this = this;
@@ -249,9 +269,9 @@ var ibgComponent = (function () {
     ibgComponent.prototype.ngOnInit = function () {
         var _this = this;
         //this.ItemService.setGroupData();    
-        this.itgs.getAccessToken().subscribe(function (res) {
-            var xxx = res;
-        });
+        // this.itgs.getAccessToken().subscribe(res => {
+        //     let xxx = res
+        // });
         this.getTypes();
         this.getGroups();
         this.itgs.getUnderData('https://crest-tq.eveonline.com/market/types/?group=https://crest-tq.eveonline.com/market/groups/4/')

@@ -21,7 +21,7 @@ var AppComponent = (function () {
     AppComponent = __decorate([
         core_1.Component({
             selector: 'as-eve-app',
-            template: "<h1>Eve Market Data</h1>\n    <nav>\n        <a [routerLink]=\"['help']\">Help</a>\n        <a [routerLink]=\"['regions']\">Region</a>\n        <a [routerLink]=\"['ItemsByGroup']\">Items by groups</a>\n        <a [routerLink]=\"['PriceBoard']\">Price Board</a>\n        <a [routerLink]=\"['ibg']\"> (under construction) Price Chart</a>\n    </nav>\n    <router-outlet></router-outlet>\n    \n    ",
+            template: "<h1>Eve Market Data</h1>\n    <nav>\n        <a [routerLink]=\"['help']\">User Info</a>\n        <a [routerLink]=\"['UserData']\">Items by groups</a>\n        <a [routerLink]=\"['ItemsByGroup']\">Items by groups</a>\n        <a [routerLink]=\"['regions']\">Region</a>\n        <a [routerLink]=\"['PriceBoard']\">Price Board</a>\n        <a [routerLink]=\"['ibg']\"> (under construction) Price Chart</a>\n    </nav>\n    <router-outlet></router-outlet>\n    \n    ",
             styleUrls: ['app/appstyle.css'],
             directives: [region_component_1.RegionComponent, ibg_comp_1.ibgComponent, priceboard_component_1.PriceBoardComponent, help_component_1.HelpComponent, router_1.ROUTER_DIRECTIVES],
         }), 

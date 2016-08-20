@@ -12,9 +12,15 @@ var core_1 = require('@angular/core');
 var HelpComponent = (function () {
     function HelpComponent() {
     }
+    HelpComponent.prototype.login = function (event, cname, pw) {
+    };
+    HelpComponent.prototype.saveCharacter = function (cn) {
+        localStorage.setItem('character', cn);
+    };
     HelpComponent = __decorate([
         core_1.Component({
             templateUrl: 'app/Help/help.component.html',
+            styleUrls: ['app/Help/chartstyle.css'],
         }), 
         __metadata('design:paramtypes', [])
     ], HelpComponent);

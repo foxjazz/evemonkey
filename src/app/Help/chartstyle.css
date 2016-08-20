@@ -22,3 +22,7 @@ body {
 .x.axis path {
   display: none;
 }
+
+.input {
+    color: black;
+}

@@ -1,6 +1,6 @@
 import {Component,EventEmitter, Input, Output} from '@angular/core';
 import {ItemGroups,ItemGroup} from '../ItemsByGroup/interface';
-import {ibgComponent} from '../ItemsByGroup/ibg.comp';
+
 import {ibgService} from '../ItemsByGroup/ibg.service';
 @Component({
     selector: 'as-tree-view',

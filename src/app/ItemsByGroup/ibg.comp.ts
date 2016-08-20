@@ -111,8 +111,9 @@ export class ibgComponent implements OnInit{
         let RegionId = this.yourHub.regionId;
         let StationId = this.yourHub.stationId;
         let ibitem: BItem;
-        this.itgs.getBOM(item.id.toString()).subscribe(res => {this.selBom = res;
-        this.itgs.getBuildPrice(this.selBom, RegionId).subscribe(res => {let pts = res;
+        this.itgs.getBOM(item.id.toString()).subscribe(bom => {
+            this.selBom = bom;
+            this.itgs.getBuildPrice(bom, RegionId).subscribe(res => {let pts = res;
             tot = 0;
             this.lastHub = this.yourHub;
           for(let bomitem of this.selBom)
@@ -139,7 +140,11 @@ export class ibgComponent implements OnInit{
                }
                let ibitem: BItem = {typeid: 0, description: 'Total', price: parseFloat(tot.toFixed(2))};
                     this.itemBuild.items.push(ibitem);
-            });    
+            },
+                error => {console.log(error);
+                }
+                );
+
         });
 
     }

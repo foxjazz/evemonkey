@@ -23,9 +23,8 @@ var ibgService = (function () {
     //http://evecore.azurewebsites.net/api/blueprint/11183
     ibgService.prototype.getBuildPrice = function (thisbom, Region) {
         var _this = this;
-        this.tbom = thisbom;
         var pt = new Array();
-        return Observable_1.Observable.from(this.tbom)
+        return Observable_1.Observable.from(thisbom)
             .flatMap(function (t) { return _this.getPriceDataUri(t.typeid, Region); })
             .toArray()
             .do(function (result) {
@@ -33,7 +32,8 @@ var ibgService = (function () {
         });
     };
     ibgService.prototype.getBOM = function (typeid) {
-        var uri = 'http://evecore.azurewebsites.net/api/blueprint/' + typeid;
+        //let uri = 'http://evecore.azurewebsites.net/api/blueprint/' + typeid;
+        var uri = 'https://54.227.207.106:3001/api/evemarket/' + typeid;
         return this.http.get(uri)
             .map(function (res) { return res.json(); });
     };
